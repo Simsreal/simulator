@@ -5,12 +5,21 @@
 
 ## Prerequisites
 
-### Plugins
+### Mujoco Submodule
+```bash
+git submodule update --init --recursive
+```
+
+### Unity Plugins
 
 #### Mujoco
-
+1. In Unity editor, go to `Window -> Package Manager`
+2. Click `+` button and select `Install package from disk`
+3. Select the path as `mujoco/unity/package.json`.
+4. Click `Install` button.
 
 #### NetMQ
-[text](https://github.com/GlitchEnzo/NuGetForUnity)
+1. Install [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity)
+2. In `NuGetForUnity` settings, install `NetMQ`.
 
 ## Launch Unity
