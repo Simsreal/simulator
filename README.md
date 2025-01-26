@@ -39,3 +39,7 @@ tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
 
 ## Unity Scripts
 All the scripts are located in `Assets/Scripts`.
+
+## FAQs
+### DllNotFoundException on Linux
+In Unity Editor, Click `Assets -> Reimport All`.
