@@ -16,7 +16,7 @@ cd simulator
 git submodule update --init --recursive
 ```
 
-In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select the path to the cloned `simulator` folder.
+In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.` or `Locate` (Linux), select the path to the cloned `simulator` folder.
 
 ### Unity Plugins
 
