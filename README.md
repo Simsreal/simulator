@@ -26,6 +26,13 @@ In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select th
 3. Select the path as `mujoco/unity/package.json`.
 4. Click `Install` button.
 
+If you are on Linux, setup the `.so` DLL as well:
+```bash
+wget https://github.com/google-deepmind/mujoco/releases/download/3.2.7/mujoco-3.2.7-linux-x86_64.tar.gz
+mkdir -p ~/.mujoco
+tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
+```
+
 #### NetMQ
 1. Install [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity)
 2. In `NuGetForUnity` settings, install `NetMQ`.
