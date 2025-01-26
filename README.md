@@ -6,7 +6,7 @@
 ## Prerequisites
 
 ### Unity
-Install [Unity Hub](https://unity.com/download). The workspace version is `6000.0.32f1` with `DX11` enabled. Only `Windows` is being tested, `Mac` and `Linux` are not tested but should be supported..
+Install [Unity Hub](https://unity.com/download). The workspace version is `6000.0.32f1` with `DX11` enabled. Only `Windows` is being tested, `Mac` and `Linux` are not tested but should be supported.
 
 ### Simsreal Unity Project setup
 First, clone the repository and initialize the submodule (This assumes you already have `git` and `ssh` setup).
@@ -16,7 +16,7 @@ cd simulator
 git submodule update --init --recursive
 ```
 
-In Unity Hub, go to `Projects`. Click `Add -> Add Project from Disk...` and the path to the `simulator` folder.
+In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select the path to the cloned `simulator` folder.
 
 ### Unity Plugins
 
@@ -30,4 +30,5 @@ In Unity Hub, go to `Projects`. Click `Add -> Add Project from Disk...` and the 
 1. Install [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity)
 2. In `NuGetForUnity` settings, install `NetMQ`.
 
-## Launch Unity
+## Unity Scripts
+All the scripts are located in `Assets/Scripts`.
