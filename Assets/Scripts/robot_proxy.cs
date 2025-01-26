@@ -1,17 +1,28 @@
-using (var server = new ResponseSocket("@tcp://localhost:5556")) // bind
-using (var client = new RequestSocket(">tcp://localhost:5556"))  // connect
+using UnityEngine;
+using System;
+using NetMQ;
+using NetMQ.Sockets;
+
+public class RobotProxy : MonoBehaviour
 {
-    // Send a message from the client socket
-    client.SendFrame("Hello");
+    static void Main()
+    {
+        using (var server = new ResponseSocket("@tcp://localhost:5556")) // bind
+        using (var client = new RequestSocket(">tcp://localhost:5556"))  // connect
+        {
+            // Send a message from the client socket
+            client.SendFrame("Hello");
 
-    // Receive the message from the server socket
-    string m1 = server.ReceiveFrameString();
-    Console.WriteLine("From Client: {0}", m1);
+            // Receive the message from the server socket
+            string m1 = server.ReceiveFrameString();
+            Console.WriteLine("From Client: {0}", m1);
 
-    // Send a response back from the server
-    server.SendFrame("Hi Back");
+            // Send a response back from the server
+            server.SendFrame("Hi Back");
 
-    // Receive the response from the client socket
-    string m2 = client.ReceiveFrameString();
-    Console.WriteLine("From Server: {0}", m2);
+            // Receive the response from the client socket
+            string m2 = client.ReceiveFrameString();
+            Console.WriteLine("From Server: {0}", m2);
+        }
+    }
 }
