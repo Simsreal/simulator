@@ -1,14 +1,19 @@
 using UnityEngine;
+using Mujoco;
 
-public class main : MonoBehaviour
+public class MujocoControl : MonoBehaviour
 {
+    // private MjScene scene;
+
     void Start()
     {
-        Debug.Log("Main script attached and running.:))!!!!!");
+        Debug.Log("MujocoControl UP.");
     }
 
-    void Update()
+    public unsafe void Update()
     {
-        // Add any logic you want to test here
+        var data = MjScene.Instance.Data;
+        Debug.Log(data->qpos[0]);
     }
+
 }
