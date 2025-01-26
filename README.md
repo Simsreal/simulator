@@ -5,10 +5,18 @@
 
 ## Prerequisites
 
-### Mujoco Submodule
+### Unity
+Install [Unity Hub](https://unity.com/download). The workspace version is `6000.0.32f1` with `DX11` enabled. Only `Windows` is being tested, `Mac` and `Linux` are not tested but should be supported..
+
+### Simsreal Unity Project setup
+First, clone the repository and initialize the submodule (This assumes you already have `git` and `ssh` setup).
 ```bash
+git clone git@github.com:Simsreal/simulator.git
+cd simulator
 git submodule update --init --recursive
 ```
+
+In Unity Hub, go to `Projects`. Click `Add -> Add Project from Disk...` and the path to the `simulator` folder.
 
 ### Unity Plugins
 
