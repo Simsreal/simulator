@@ -26,9 +26,9 @@ public class MujocoControl : MonoBehaviour
             string stateMessage = $"qpos: {data->qpos[0]}";
             
             // Use the renamed method
-            robotProxy.SendZmqMessage(stateMessage);
+            // robotProxy.SendZmqMessage(stateMessage);
             
-            lastSendTime = Time.time;
+            // lastSendTime = Time.time;
         }
     }
 }

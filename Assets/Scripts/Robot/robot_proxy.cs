@@ -7,10 +7,19 @@ public class RobotProxy : MonoBehaviour
     void Start()
     {
         zmqCommunicator = new ZmqCommunicator();
-        TestConnection();
     }
 
-    // Renamed to avoid confusion with Unity's SendMessage
+    void Update()
+    {
+        // Check for incoming messages
+        string message = zmqCommunicator.ReceiveMessage();
+        if (message != null)
+        {
+            // Handle received message
+            Debug.Log($"Handling received message: {message}");
+        }
+    }
+
     public void SendZmqMessage(string message)
     {
         if (zmqCommunicator != null)
@@ -21,11 +30,6 @@ public class RobotProxy : MonoBehaviour
         {
             Debug.LogError("ZmqCommunicator not initialized!");
         }
-    }
-
-    void TestConnection()
-    {
-        SendZmqMessage("Hello from Unity!");
     }
 
     void OnDestroy()

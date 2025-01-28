@@ -5,42 +5,90 @@ using UnityEngine;
 
 public class ZmqCommunicator : IDisposable
 {
+    private PushSocket sender;
+    private PullSocket receiver;
     private bool isRunning = false;
     private int messageCount = 0;
 
-    public ZmqCommunicator(string address = "tcp://localhost:5556")
+    public ZmqCommunicator(
+        string sendAddress = "tcp://localhost:5556",
+        string receiveAddress = "tcp://localhost:5557")
     {
-        isRunning = true;
-        Debug.Log($"[MOCK] ZMQ Communicator initialized at {address}");
+        try
+        {
+            // Initialize NetMQ sockets
+            sender = new PushSocket();
+            receiver = new PullSocket();
+            
+            sender.Connect(sendAddress);
+            receiver.Connect(receiveAddress);
+            
+            isRunning = true;
+            Debug.Log($"ZMQ Communicator initialized - Sending to: {sendAddress}, Receiving from: {receiveAddress}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to initialize ZMQ: {e.Message}");
+            isRunning = false;
+        }
     }
 
     public bool SendMessage(string message)
     {
         if (!isRunning) return false;
 
-        messageCount++;
-        Debug.Log($"[MOCK] Client sending: {message}");
-        
-        // Simulate receiving a response
-        string fakeResponse = GenerateMockResponse(message);
-        Debug.Log($"[MOCK] Server received: {message}");
-        Debug.Log($"[MOCK] Server sending response: {fakeResponse}");
-        Debug.Log($"[MOCK] Client received: {fakeResponse}");
-        
-        return true;
+        try
+        {
+            messageCount++;
+            Debug.Log($"Sending: {message}");
+            sender.SendFrame(message);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error in SendMessage: {e.Message}");
+            return false;
+        }
     }
 
-    private string GenerateMockResponse(string originalMessage)
+    public string ReceiveMessage(bool nonBlocking = true)
     {
-        return $"Response #{messageCount}: Processed '{originalMessage}'";
+        if (!isRunning) return null;
+
+        try
+        {
+            bool hasMore;
+            if (nonBlocking)
+            {
+                if (receiver.TryReceiveFrameString(out string message, out hasMore))
+                {
+                    Debug.Log($"Received: {message}");
+                    return message;
+                }
+                return null;
+            }
+            else
+            {
+                string message = receiver.ReceiveFrameString(out hasMore);
+                Debug.Log($"Received: {message}");
+                return message;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error in ReceiveMessage: {e.Message}");
+            return null;
+        }
     }
 
     public void Dispose()
     {
         if (isRunning)
         {
+            sender?.Dispose();
+            receiver?.Dispose();
             isRunning = false;
-            Debug.Log("[MOCK] ZMQ Communicator disposed");
+            Debug.Log("ZMQ Communicator disposed");
         }
     }
 }
