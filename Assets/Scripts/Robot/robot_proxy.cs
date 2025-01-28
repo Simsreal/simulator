@@ -10,21 +10,22 @@ public class RobotProxy : MonoBehaviour
         TestConnection();
     }
 
-    void TestConnection()
+    // Renamed to avoid confusion with Unity's SendMessage
+    public void SendZmqMessage(string message)
     {
-        // Test multiple messages
-        zmqCommunicator.SendMessage("Hello from Unity!");
-        zmqCommunicator.SendMessage("Request robot position");
-        zmqCommunicator.SendMessage("Move robot to (1,0,0)");
+        if (zmqCommunicator != null)
+        {
+            zmqCommunicator.SendMessage(message);
+        }
+        else
+        {
+            Debug.LogError("ZmqCommunicator not initialized!");
+        }
     }
 
-    // Optional: Test periodic communication
-    void Update()
+    void TestConnection()
     {
-        if (Time.frameCount % 100 == 0)  // Every 100 frames
-        {
-            zmqCommunicator.SendMessage($"Periodic update at {Time.time}s");
-        }
+        SendZmqMessage("Hello from Unity!");
     }
 
     void OnDestroy()

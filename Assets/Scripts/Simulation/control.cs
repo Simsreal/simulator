@@ -4,6 +4,8 @@ using Mujoco;
 public class MujocoControl : MonoBehaviour
 {
     private RobotProxy robotProxy;
+    private float sendInterval = 0.1f;
+    private float lastSendTime = 0f;
 
     void Start()
     {
@@ -18,8 +20,15 @@ public class MujocoControl : MonoBehaviour
 
     public unsafe void Update()
     {
-        var data = MjScene.Instance.Data;
-        // Debug.Log(data->qpos[0]);
+        if (Time.time - lastSendTime >= sendInterval)
+        {
+            var data = MjScene.Instance.Data;
+            string stateMessage = $"qpos: {data->qpos[0]}";
+            
+            // Use the renamed method
+            robotProxy.SendZmqMessage(stateMessage);
+            
+            lastSendTime = Time.time;
+        }
     }
-
 }
