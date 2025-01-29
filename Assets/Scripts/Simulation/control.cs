@@ -8,7 +8,9 @@ public class MujocoControl : MonoBehaviour
     private float sendInterval = 0.1f;
     private float lastSendTime = 0f;
     
-    private CameraCapture cameraCapture;
+    private CameraCapture egocentricView;
+    private int egocentricViewWidth = 640;
+    private int egocentricViewHeight = 480;
 
     
     void Start()
@@ -21,11 +23,13 @@ public class MujocoControl : MonoBehaviour
             robotProxy = gameObject.AddComponent<RobotProxy>();
         }
 
-        cameraCapture = gameObject.GetComponent<CameraCapture>();
-        if (cameraCapture == null)
+        egocentricView = gameObject.GetComponent<CameraCapture>();
+        if (egocentricView == null)
         {
-            cameraCapture = gameObject.AddComponent<CameraCapture>();
-            cameraCapture.cameraName = cameraName;
+            egocentricView = gameObject.AddComponent<CameraCapture>();
+            egocentricView.cameraName = cameraName;
+            egocentricView.captureWidth = egocentricViewWidth;
+            egocentricView.captureHeight = egocentricViewHeight;
         }
     }
 
@@ -38,12 +42,13 @@ public class MujocoControl : MonoBehaviour
             RobotState state = new RobotState();
             state.message = $"qpos: {data->qpos[0]}";
             
-            if (cameraCapture != null)
+            if (egocentricView != null)
             {
-                // Texture2D capturedImage = cameraCapture.CaptureView();
-                // robotProxy.SendImage(capturedImage);
-                robotProxy.SendMessage(state);
+                Texture2D capturedImage = egocentricView.CaptureView();
+                byte[] bytes = capturedImage.EncodeToJPG();
+                state.egocentric_view = bytes;
             }
+            robotProxy.SendMessage(state);
 
         }
     }

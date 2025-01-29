@@ -76,7 +76,7 @@ public class ZmqCommunicator : IDisposable
         try
         {
             publisher.SendFrame(JsonUtility.ToJson(state));
-            Debug.Log($"Published message: {state.message}");
+            // Debug.Log($"Published message: {state.message}");
         }
         catch (Exception e)
         {

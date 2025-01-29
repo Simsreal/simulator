@@ -11,13 +11,7 @@ public class RobotProxy : MonoBehaviour
 
     void Update()
     {
-        // Check for incoming messages
-        // string message = zmqCommunicator.ReceiveMessage();
-        // if (message != null)
-        // {
-        //     // Handle received message
-        //     Debug.Log($"Handling received message: {message}");
-        // }
+        
     }
 
     public void SendMessage(RobotState state)

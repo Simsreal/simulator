@@ -5,4 +5,5 @@ using UnityEngine;
 public class RobotState
 {
     public string message;
+    public byte[] egocentric_view;
 }

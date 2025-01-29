@@ -1,3 +1,5 @@
+import json
+
 import zmq
 import numpy as np
 import cv2
@@ -18,15 +20,11 @@ def run_image_subscriber():
             image_bytes = sub_socket.recv()
 
             # Try to decode as an image using OpenCV
-            np_arr = np.frombuffer(image_bytes, np.uint8)
-            image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-
-            if image is not None:
-                cv2.imshow("Unity -> Python [Subscriber]", image)
-                cv2.waitKey(1)
-            else:
-                # If it's not an image, maybe it's a string
-                print(f"Received string: {image_bytes.decode('utf-8', errors='replace')}")
+            state = json.loads(image_bytes)
+            img = np.frombuffer(bytes(state["egocentric_view"]), dtype=np.uint8)
+            img = cv2.imdecode(img, cv2.IMREAD_COLOR)
+            cv2.imshow("Unity -> Python [Subscriber]", img)
+            cv2.waitKey(1)
 
         except Exception as e:
             print(f"Python Subscriber Error: {e}")

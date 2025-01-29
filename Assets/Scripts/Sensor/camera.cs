@@ -6,6 +6,10 @@ public class CameraCapture : MonoBehaviour
     public RenderTexture renderTexture;
     public string cameraName = "egocentric"; // Expose cameraName as a public parameter
 
+    // Add public fields for resolution
+    public int captureWidth = 640;  // Default width
+    public int captureHeight = 480; // Default height
+
     void Start()
     {
         if (cameraToCapture == null)
@@ -21,7 +25,8 @@ public class CameraCapture : MonoBehaviour
 
         if (renderTexture == null)
         {
-            renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
+            // Use the specified captureWidth and captureHeight
+            renderTexture = new RenderTexture(captureWidth, captureHeight, 24);
         }
 
         cameraToCapture.targetTexture = renderTexture;

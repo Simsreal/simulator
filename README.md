@@ -41,9 +41,8 @@ tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
 
 
 ## Unity Assets
-### Boxophobic
-
-### Starter Assets
+* `Boxophobic`
+* `Starter Assets`
 
 ## Unity Scripts
 All the scripts are located in `Assets/Scripts`.
@@ -51,3 +50,5 @@ All the scripts are located in `Assets/Scripts`.
 ## FAQs
 ### DllNotFoundException on Linux
 In Unity Editor, Click `Assets -> Reimport All`.
+
+
