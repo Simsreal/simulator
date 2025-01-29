@@ -37,6 +37,14 @@ tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
 1. Install [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity)
 2. In `NuGetForUnity` settings, install `NetMQ`.
 
+## Unity Organization
+
+
+## Unity Assets
+### Boxophobic
+
+### Starter Assets
+
 ## Unity Scripts
 All the scripts are located in `Assets/Scripts`.
 
