@@ -46,4 +46,22 @@ public class CameraCapture : MonoBehaviour
         RenderTexture.active = currentRT;
         return image;
     }
+
+    public byte[] CaptureViewBytes()
+    {
+        Texture2D image = CaptureView();
+        byte[] bytes = image.EncodeToJPG();
+        Object.Destroy(image);
+        return bytes;
+    }
+
+    void OnDestroy()
+    {
+        if (renderTexture != null)
+        {
+            renderTexture.Release();
+            renderTexture = null;
+        }
+    }
+
 }

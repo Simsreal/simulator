@@ -9,14 +9,12 @@ public class MujocoControl : MonoBehaviour
     private float lastSendTime = 0f;
     
     private CameraCapture egocentricView;
-    private int egocentricViewWidth = 640;
-    private int egocentricViewHeight = 480;
+    public int egocentricViewWidth = 640;
+    public int egocentricViewHeight = 480;
 
     
     void Start()
     {
-        Debug.Log("MujocoControl UP.");
-
         robotProxy = gameObject.GetComponent<RobotProxy>();
         if (robotProxy == null)
         {
@@ -31,6 +29,7 @@ public class MujocoControl : MonoBehaviour
             egocentricView.captureWidth = egocentricViewWidth;
             egocentricView.captureHeight = egocentricViewHeight;
         }
+        Debug.Log("Successfully initialized MujocoControl.");
     }
 
 
@@ -44,8 +43,8 @@ public class MujocoControl : MonoBehaviour
             
             if (egocentricView != null)
             {
-                Texture2D capturedImage = egocentricView.CaptureView();
-                byte[] bytes = capturedImage.EncodeToJPG();
+                // no need to destroy the texture here, as it is destroyed by the camera capture component
+                byte[] bytes = egocentricView.CaptureViewBytes();
                 state.egocentric_view = bytes;
             }
             robotProxy.SendMessage(state);

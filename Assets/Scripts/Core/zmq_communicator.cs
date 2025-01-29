@@ -3,7 +3,6 @@ using NetMQ;
 using NetMQ.Sockets;
 using UnityEngine;
 
-// Example usage of NetMQPoller for async receiving:
 public class ZmqCommunicator : IDisposable
 {
     private PublisherSocket publisher;
