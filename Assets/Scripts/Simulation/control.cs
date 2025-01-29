@@ -25,9 +25,6 @@ public class MujocoControl : MonoBehaviour
         if (cameraCapture == null)
         {
             cameraCapture = gameObject.AddComponent<CameraCapture>();
-        }
-        else
-        {
             cameraCapture.cameraName = cameraName;
         }
     }
@@ -38,18 +35,14 @@ public class MujocoControl : MonoBehaviour
         if (Time.time - lastSendTime >= sendInterval)
         {
             var data = MjScene.Instance.Data;
-            string stateMessage = $"qpos: {data->qpos[0]}";
+            RobotState state = new RobotState();
+            state.message = $"qpos: {data->qpos[0]}";
             
             if (cameraCapture != null)
             {
-                Texture2D capturedImage = cameraCapture.CaptureView();
-                int numPixelsToDebug = 5; // Number of pixels to debug
-                for (int i = 0; i < numPixelsToDebug; i++)
-                {
-                    // Assuming you want to debug the first row of pixels
-                    Color pixelColor = capturedImage.GetPixel(i, 0);
-                    Debug.Log($"Pixel {i}: {pixelColor}");
-                }
+                // Texture2D capturedImage = cameraCapture.CaptureView();
+                // robotProxy.SendImage(capturedImage);
+                robotProxy.SendMessage(state);
             }
 
         }

@@ -12,25 +12,26 @@ public class RobotProxy : MonoBehaviour
     void Update()
     {
         // Check for incoming messages
-        string message = zmqCommunicator.ReceiveMessage();
-        if (message != null)
-        {
-            // Handle received message
-            Debug.Log($"Handling received message: {message}");
-        }
+        // string message = zmqCommunicator.ReceiveMessage();
+        // if (message != null)
+        // {
+        //     // Handle received message
+        //     Debug.Log($"Handling received message: {message}");
+        // }
     }
 
-    public void SendZmqMessage(string message)
+    public void SendMessage(RobotState state)
     {
         if (zmqCommunicator != null)
         {
-            zmqCommunicator.SendMessage(message);
+            zmqCommunicator.SendMessage(state);
         }
         else
         {
             Debug.LogError("ZmqCommunicator not initialized!");
         }
     }
+
 
     void OnDestroy()
     {
