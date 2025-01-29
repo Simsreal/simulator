@@ -4,16 +4,17 @@ public class CameraCapture : MonoBehaviour
 {
     public Camera cameraToCapture;
     public RenderTexture renderTexture;
+    public string cameraName = "egocentric"; // Expose cameraName as a public parameter
 
     void Start()
     {
         if (cameraToCapture == null)
         {
-            // Try to find the camera by name
-            cameraToCapture = GameObject.Find("egocentric")?.GetComponent<Camera>();
+            // Use the cameraName parameter to find the camera
+            cameraToCapture = GameObject.Find(cameraName)?.GetComponent<Camera>();
             if (cameraToCapture == null)
             {
-                Debug.LogError("Camera named 'egocentric' not found!");
+                Debug.LogError($"Camera named '{cameraName}' not found!");
                 return;
             }
         }

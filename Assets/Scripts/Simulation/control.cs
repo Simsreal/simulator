@@ -24,12 +24,11 @@ public class MujocoControl : MonoBehaviour
         cameraCapture = gameObject.GetComponent<CameraCapture>();
         if (cameraCapture == null)
         {
-            Debug.LogError("CameraCapture component not found!");
+            cameraCapture = gameObject.AddComponent<CameraCapture>();
         }
         else
         {
-            // Ensure CameraCapture has a cameraName property or field
-            // cameraCapture.cameraName = cameraName; // Uncomment if cameraName is added to CameraCapture
+            cameraCapture.cameraName = cameraName;
         }
     }
 
@@ -44,11 +43,15 @@ public class MujocoControl : MonoBehaviour
             if (cameraCapture != null)
             {
                 Texture2D capturedImage = cameraCapture.CaptureView();
-                // Use capturedImage as needed
+                int numPixelsToDebug = 5; // Number of pixels to debug
+                for (int i = 0; i < numPixelsToDebug; i++)
+                {
+                    // Assuming you want to debug the first row of pixels
+                    Color pixelColor = capturedImage.GetPixel(i, 0);
+                    Debug.Log($"Pixel {i}: {pixelColor}");
+                }
             }
 
-            // robotProxy.SendZmqMessage(stateMessage);
-            // lastSendTime = Time.time;
         }
     }
 }
