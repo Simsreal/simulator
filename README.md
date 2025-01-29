@@ -8,7 +8,7 @@
 ### Unity
 Install [Unity Hub](https://unity.com/download). The workspace version is `6000.0.32f1`.
 
-### Simsreal Unity Project setup
+### Unity Project setup
 First, clone the repository and initialize the submodule (This assumes you already have `git` and `ssh` setup).
 ```bash
 git clone git@github.com:Simsreal/simulator.git
