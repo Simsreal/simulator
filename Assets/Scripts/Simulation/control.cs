@@ -4,9 +4,13 @@ using Mujoco;
 public class MujocoControl : MonoBehaviour
 {
     private RobotProxy robotProxy;
+    private string cameraName = "egocentric";
     private float sendInterval = 0.1f;
     private float lastSendTime = 0f;
+    
+    private CameraCapture cameraCapture;
 
+    
     void Start()
     {
         Debug.Log("MujocoControl UP.");
@@ -16,7 +20,19 @@ public class MujocoControl : MonoBehaviour
         {
             robotProxy = gameObject.AddComponent<RobotProxy>();
         }
+
+        cameraCapture = gameObject.GetComponent<CameraCapture>();
+        if (cameraCapture == null)
+        {
+            Debug.LogError("CameraCapture component not found!");
+        }
+        else
+        {
+            // Ensure CameraCapture has a cameraName property or field
+            // cameraCapture.cameraName = cameraName; // Uncomment if cameraName is added to CameraCapture
+        }
     }
+
 
     public unsafe void Update()
     {
@@ -25,9 +41,13 @@ public class MujocoControl : MonoBehaviour
             var data = MjScene.Instance.Data;
             string stateMessage = $"qpos: {data->qpos[0]}";
             
-            // Use the renamed method
+            if (cameraCapture != null)
+            {
+                Texture2D capturedImage = cameraCapture.CaptureView();
+                // Use capturedImage as needed
+            }
+
             // robotProxy.SendZmqMessage(stateMessage);
-            
             // lastSendTime = Time.time;
         }
     }
