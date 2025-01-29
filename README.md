@@ -6,7 +6,7 @@
 ## Prerequisites
 
 ### Unity
-Install [Unity Hub](https://unity.com/download). The workspace version is `6000.0.32f1` with `DX11` enabled.
+Install [Unity Hub](https://unity.com/download). The workspace version is `6000.0.32f1`.
 
 ### Simsreal Unity Project setup
 First, clone the repository and initialize the submodule (This assumes you already have `git` and `ssh` setup).
@@ -37,12 +37,12 @@ tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
 1. Install [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity)
 2. In `NuGetForUnity` settings, install `NetMQ`.
 
-## Unity Organization
-
 
 ## Unity Assets
-* `Boxophobic`
-* `Starter Assets`
+* [Animal pack deluxe](https://assetstore.unity.com/packages/3d/characters/animals/animal-pack-deluxe-99702)
+* [Starter Assets](https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526)
+* [The Visual Engine](https://assetstore.unity.com/packages/tools/utilities/the-visual-engine-286827?srsltid=AfmBOooEvsmJ4lYwBSmDCvyxRAC9RLq3f43LRQoHwi4ART23U_QAzOFR)
+    * Paid, not needed for now. (120$ usd)
 
 ## Unity Scripts
 All the scripts are located in `Assets/Scripts`.
