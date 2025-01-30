@@ -5,10 +5,11 @@ public class MujocoControl : MonoBehaviour
 {
     private RobotProxy robotProxy;
     private string cameraName = "egocentric";
-    private float sendInterval = 0.1f;
+
     private float lastSendTime = 0f;
-    
+
     private CameraCapture egocentricView;
+    public float sendInterval = 0.1f;
     public int egocentricViewWidth = 640;
     public int egocentricViewHeight = 480;
 

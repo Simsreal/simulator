@@ -51,4 +51,3 @@ All the scripts are located in `Assets/Scripts`.
 ### DllNotFoundException on Linux
 In Unity Editor, Click `Assets -> Reimport All`.
 
-
