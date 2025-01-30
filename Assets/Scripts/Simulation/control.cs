@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System;                       // IntPtr is in here
+using System.Runtime.InteropServices;
 using UnityEngine;
 using Mujoco;
 
@@ -8,7 +10,7 @@ public class MujocoControl : MonoBehaviour
     private string cameraName = "egocentric";
 
     private float lastSendTime = 0f;
-    private Dictionary<string, string> xmlData;
+    private Dictionary<string, string> robot_def;
 
     private CameraCapture egocentricView;
     public float sendInterval = 0.1f;
@@ -34,25 +36,35 @@ public class MujocoControl : MonoBehaviour
             egocentricView.captureWidth = egocentricViewWidth;
             egocentricView.captureHeight = egocentricViewHeight;
         }
-        xmlData = XmlReaderUtility.ReadXmlAttributes(MJCFXMLPath);
+        robot_def = XmlReaderUtility.ReadXmlAttributes(MJCFXMLPath);
         Debug.Log("Successfully initialized MujocoControl.");
     }
 
+
+    private unsafe RobotJointData getRobotJointData()
+    {
+        var mjData = MjScene.Instance.Data;
+        var mjModel = MjScene.Instance.Model;
+        RobotJointData jointStates = new RobotJointData();
+        List<double> qpos = new List<double>();
+
+        for (int i = 0; i < mjModel->njnt; i++)
+        {
+            //
+        }
+        jointStates.qpos = qpos;
+        return jointStates;
+    }
 
     public unsafe void Update()
     {
         if (Time.time - lastSendTime >= sendInterval)
         {
-            var data = MjScene.Instance.Data;
+            var mjData = MjScene.Instance.Data;
+            var mjModel = MjScene.Instance.Model;
             RobotState state = new RobotState();
-            state.message = $"qpos: {data->qpos[0]}";
-            
-            if (egocentricView != null)
-            {
-                // no need to destroy the texture here, as it is destroyed by the camera capture component
-                byte[] bytes = egocentricView.CaptureViewBytes();
-                state.egocentric_view = bytes;
-            }
+            state.egocentric_view = egocentricView.CaptureViewBytes();
+            state.robot_joint_data = getRobotJointData();
             robotProxy.SendMessage(state);
 
         }
