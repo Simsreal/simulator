@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Mujoco;
 
@@ -7,15 +8,18 @@ public class MujocoControl : MonoBehaviour
     private string cameraName = "egocentric";
 
     private float lastSendTime = 0f;
+    private Dictionary<string, string> xmlData;
 
     private CameraCapture egocentricView;
     public float sendInterval = 0.1f;
     public int egocentricViewWidth = 640;
     public int egocentricViewHeight = 480;
+    public string MJCFXMLPath = Application.dataPath + "/Assets/MJCF/humanoid.xml";
 
     
     void Start()
     {
+        Debug.Log(MJCFXMLPath);
         robotProxy = gameObject.GetComponent<RobotProxy>();
         if (robotProxy == null)
         {
@@ -30,6 +34,7 @@ public class MujocoControl : MonoBehaviour
             egocentricView.captureWidth = egocentricViewWidth;
             egocentricView.captureHeight = egocentricViewHeight;
         }
+        xmlData = XmlReaderUtility.ReadXmlAttributes(MJCFXMLPath);
         Debug.Log("Successfully initialized MujocoControl.");
     }
 
