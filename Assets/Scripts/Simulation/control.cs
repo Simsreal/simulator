@@ -1,6 +1,3 @@
-// references
-// https://mujoco.readthedocs.io/en/stable/APIreference/APItypes.html#mjtobj
-
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -10,7 +7,7 @@ using Mujoco;
 
 public class MujocoControl : MonoBehaviour
 {
-    private MujocoUtils mujocoUtils = new MujocoUtils();
+    private MujocoAPIProxy mujocoAPIProxy = new MujocoAPIProxy();
     private RobotProxy robotProxy;
     private string cameraName = "egocentric";
 
@@ -51,7 +48,8 @@ public class MujocoControl : MonoBehaviour
         {
             RobotState state = new RobotState();
             state.egocentric_view = egocentricView.CaptureViewBytes();
-            state.robot_joint_data = mujocoUtils.getRobotJointData();
+            state.robot_joint_data = mujocoAPIProxy.getRobotJointDataSerialized();
+            state.robot_geom_mapping = mujocoAPIProxy.getRobotGeomMappingSerialized();
             robotProxy.SendMessage(state);
 
         }
