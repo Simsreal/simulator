@@ -21,6 +21,34 @@ public class RobotState
     public Dictionary<string, RobotJointData> robot_joint_data;
     public RobotGeomMapping robot_geom_mapping;
     public RobotJointMapping robot_joint_mapping;
+    public RobotContactList robot_contact_list;
+}
+
+[Serializable]
+public class RobotContactList
+{
+    public List<RobotContact> contact;
+}
+
+
+public class RobotContact
+{
+    public List<double> H;
+    public int dim;
+    public double distance;
+    public int efc_address;
+    public List<int> elem;
+    public int exclude;
+    public List<int> flex;
+    public List<double> frame;
+    public List<double> friction;
+    public List<int> geom;
+    public int geom1;
+    public int geom2;
+    public double includemargin;
+    public double mu;
+    public List<double> pos;
+
 }
 
 public class RobotGeomMapping
