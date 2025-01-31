@@ -65,7 +65,7 @@ public class ZmqCommunicator : IDisposable
     }
 
     // Example of sending string messages:
-    public void SendMessage(RobotState state)
+    public void SendFrame(RobotFrame frame)
     {
         if (!isRunning)
         {
@@ -74,36 +74,14 @@ public class ZmqCommunicator : IDisposable
         }
         try
         {
-            publisher.SendFrame(JsonUtility.ToJson(state));
-            // Debug.Log($"Published message: {state.message}");
+            publisher.SendFrame(JsonUtility.ToJson(frame));
+            // Debug.Log($"Published message: {frame.message}");
         }
         catch (Exception e)
         {
-            Debug.LogError($"Error in SendMessage: {e.Message}");
+            Debug.LogError($"Error in SendFrame: {e.Message}");
         }
     }
-
-    // Example of sending images:
-    public void SendImage(Texture2D image)
-    {
-        if (!isRunning)
-        {
-            Debug.LogWarning("ZmqCommunicator is not running.");
-            return;
-        }
-
-        try
-        {
-            byte[] imageBytes = image.EncodeToPNG();
-            publisher.SendFrame(imageBytes);
-            Debug.Log("Published image.");
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Error in SendImage: {e.Message}");
-        }
-    }
-
     public void Dispose()
     {
         if (!isRunning) return;

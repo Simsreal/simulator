@@ -14,11 +14,11 @@ public class RobotProxy : MonoBehaviour
         
     }
 
-    public void SendMessage(RobotState state)
+    public void SendFrame(RobotFrame frame)
     {
         if (zmqCommunicator != null)
         {
-            zmqCommunicator.SendMessage(state);
+            zmqCommunicator.SendFrame(frame);
         }
         else
         {

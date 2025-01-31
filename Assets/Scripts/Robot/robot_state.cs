@@ -7,30 +7,33 @@ using Mujoco;
 /// serialized robot state.
 /// </summary>
 [Serializable]
-public class RobotState
+public class RobotFrame
 {
     public byte[] egocentric_view;
-    public string robot_joint_data;
-    public string robot_geom_mapping;
-    public string robot_joint_mapping;
+    public string robot_state;
 }
 
 [Serializable]
-public class RobotGeomIdNameMapping
+public class RobotState
 {
-    public Dictionary<int, string> geom_id_name_mapping;
+    public Dictionary<string, RobotJointData> robot_joint_data;
+    public RobotGeomMapping robot_geom_mapping;
+    public RobotJointMapping robot_joint_mapping;
+}
+
+public class RobotGeomMapping
+{
+    // public Dictionary<int, string> geom_id_name_mapping;
     public Dictionary<string, int> geom_name_id_mapping;
 }
 
-[Serializable]
-public class RobotJointIdNameMapping
+public class RobotJointMapping
 {
-    public Dictionary<int, string> joint_id_name_mapping;
+    // public Dictionary<int, string> joint_id_name_mapping;
     public Dictionary<string, int> joint_name_id_mapping;
 }
 
 
-[Serializable]
 public class RobotJointData
 {
     public int id;

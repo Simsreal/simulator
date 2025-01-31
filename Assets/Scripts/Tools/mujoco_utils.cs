@@ -17,7 +17,7 @@ public class MujocoAPIProxy
     private static readonly int GeomType = 5; // mjtOBJ_GEOM
 
 
-    public unsafe string getRobotJointDataSerialized()
+    public unsafe Dictionary<string, RobotJointData> getRobotJointData()
     {
         var mjData = MjScene.Instance.Data;
         var mjModel = MjScene.Instance.Model;
@@ -36,40 +36,40 @@ public class MujocoAPIProxy
             jointStates[name] = jointData;
         }
 
-        return JsonConvert.SerializeObject(jointStates);
+        return jointStates;
     }
 
-    public unsafe string getRobotGeomMappingSerialized() {
-        RobotGeomIdNameMapping geomIdNameMapping = new RobotGeomIdNameMapping();
-        Dictionary<int, string> idNameMapping = new Dictionary<int, string>();
+    public unsafe RobotGeomMapping getRobotGeomMapping() {
+        RobotGeomMapping geomIdNameMapping = new RobotGeomMapping();
+        // Dictionary<int, string> idNameMapping = new Dictionary<int, string>();
         Dictionary<string, int> nameIdMapping = new Dictionary<string, int>();
         var mjModel = MjScene.Instance.Model;
 
         for (int i=0; i < mjModel->ngeom; i++) {
             string name = GetObjectName((IntPtr)mjModel, GeomType, i);
-            idNameMapping[i] = name;
+            // idNameMapping[i] = name;
             nameIdMapping[name] = i;
         }
-        geomIdNameMapping.geom_id_name_mapping = idNameMapping;
+        // geomIdNameMapping.geom_id_name_mapping = idNameMapping;
         geomIdNameMapping.geom_name_id_mapping = nameIdMapping;
-        return JsonConvert.SerializeObject(geomIdNameMapping);
+        return geomIdNameMapping;
     }
 
     // public unsafe string
-    public unsafe string getRobotJointMappingSerialized() {
-        RobotJointIdNameMapping jointIdNameMapping = new RobotJointIdNameMapping();
-        Dictionary<int, string> idNameMapping = new Dictionary<int, string>();
+    public unsafe RobotJointMapping getRobotJointMapping() {
+        RobotJointMapping jointIdNameMapping = new RobotJointMapping();
+        // Dictionary<int, string> idNameMapping = new Dictionary<int, string>();
         Dictionary<string, int> nameIdMapping = new Dictionary<string, int>();
 
         var mjModel = MjScene.Instance.Model;
         for (int i=0; i < mjModel->njnt; i++) {
             string name = GetObjectName((IntPtr)mjModel, JointType, i);
-            idNameMapping[i] = name;
+            // idNameMapping[i] = name;
             nameIdMapping[name] = i;
         }
-        jointIdNameMapping.joint_id_name_mapping = idNameMapping;
+        // jointIdNameMapping.joint_id_name_mapping = idNameMapping;
         jointIdNameMapping.joint_name_id_mapping = nameIdMapping;
-        return JsonConvert.SerializeObject(jointIdNameMapping);
+        return jointIdNameMapping;
     }
 
     public string GetObjectName(IntPtr mjModel, int type, int id)

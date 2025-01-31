@@ -46,12 +46,15 @@ public class MujocoControl : MonoBehaviour
     {
         if (Time.time - lastSendTime >= sendInterval)
         {
+            RobotFrame frame = new RobotFrame();
             RobotState state = new RobotState();
-            state.egocentric_view = egocentricView.CaptureViewBytes();
-            state.robot_joint_data = mujocoAPIProxy.getRobotJointDataSerialized();
-            state.robot_geom_mapping = mujocoAPIProxy.getRobotGeomMappingSerialized();
-            state.robot_joint_mapping = mujocoAPIProxy.getRobotJointMappingSerialized();
-            robotProxy.SendMessage(state);
+            frame.egocentric_view = egocentricView.CaptureViewBytes();
+            
+            state.robot_joint_data = mujocoAPIProxy.getRobotJointData();
+            state.robot_geom_mapping = mujocoAPIProxy.getRobotGeomMapping();
+            state.robot_joint_mapping = mujocoAPIProxy.getRobotJointMapping();
+            frame.robot_state = JsonConvert.SerializeObject(state);
+            robotProxy.SendFrame(frame);
 
         }
     }
