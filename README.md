@@ -39,10 +39,9 @@ tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
 
 
 ## Unity Assets
+* [Starter Assets](https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526) (free)
 * [Animal pack deluxe](https://assetstore.unity.com/packages/3d/characters/animals/animal-pack-deluxe-99702)
-* [Starter Assets](https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526)
 * [The Visual Engine](https://assetstore.unity.com/packages/tools/utilities/the-visual-engine-286827?srsltid=AfmBOooEvsmJ4lYwBSmDCvyxRAC9RLq3f43LRQoHwi4ART23U_QAzOFR)
-    * Paid, not needed for now. (120$ usd)
 
 ## Unity Scripts
 All the scripts are located in `Assets/Scripts`.
