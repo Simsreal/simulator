@@ -45,43 +45,13 @@ public class MujocoControl : MonoBehaviour
         Debug.Log("Successfully initialized MujocoControl.");
     }
 
-    private unsafe string getRobotJointData()
-    {
-        var mjData = MjScene.Instance.Data;
-        var mjModel = MjScene.Instance.Model;
-        Dictionary<string, RobotJointData> jointStates = new Dictionary<string, RobotJointData>();
-        // for (int i=0; i < mjModel->njnt; i++)
-        // {
-        //     int jnt_type = mjModel->jnt_type[i];
-        //     string name = mujocoUtils.GetObjectName((IntPtr)mjModel, jnt_type, i);
-        //     RobotJointData jointData = new RobotJointData();
-        //     if (string.IsNullOrEmpty(name))
-        //     {
-        //         Debug.LogWarning($"No name found for joint ID {i}");
-        //         continue;
-        //     }
-        //     Debug.Log($"Joint {i} name: {name}");
-        //     // jointStates[name] = jointData;
-        // }
-
-        return JsonConvert.SerializeObject(jointStates);
-    }
-
-
-    private unsafe RobotGeomMapping getRobotGeomMapping() {
-        RobotGeomMapping geomMapping = new RobotGeomMapping();
-        return geomMapping;
-    }
-
     public unsafe void Update()
     {
         if (Time.time - lastSendTime >= sendInterval)
         {
-            var mjData = MjScene.Instance.Data;
-            var mjModel = MjScene.Instance.Model;
             RobotState state = new RobotState();
             state.egocentric_view = egocentricView.CaptureViewBytes();
-            state.robot_joint_data = getRobotJointData();
+            state.robot_joint_data = mujocoUtils.getRobotJointData();
             robotProxy.SendMessage(state);
 
         }

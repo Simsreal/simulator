@@ -21,7 +21,7 @@ def run_image_subscriber():
 
             # Try to decode as an image using OpenCV
             state = json.loads(data)
-            print(state.keys())
+            print(json.loads(state["robot_joint_data"])) # need.
             img = np.frombuffer(bytes(state["egocentric_view"]), dtype=np.uint8)
             img = cv2.imdecode(img, cv2.IMREAD_COLOR)
             cv2.imshow("Unity -> Python [Subscriber]", img)
