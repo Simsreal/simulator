@@ -12,6 +12,7 @@ public class RobotState
     public byte[] egocentric_view;
     public string robot_joint_data;
     public string robot_geom_mapping;
+    public string robot_joint_mapping;
 }
 
 [Serializable]
@@ -32,6 +33,8 @@ public class RobotJointIdNameMapping
 [Serializable]
 public class RobotJointData
 {
+    public int id;
+    public string name;
     public double qpos;
     public double qvel;
     public double effort;

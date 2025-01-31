@@ -22,7 +22,8 @@ def run_image_subscriber():
             # Try to decode as an image using OpenCV
             state = json.loads(data)
             # print(json.loads(state["robot_joint_data"]).keys()) # need.
-            print(json.loads(state["robot_geom_mapping"])) # need.
+            # print(json.loads(state["robot_geom_mapping"])) # need.
+            print(json.loads(state["robot_joint_mapping"]))
             exit()
             img = np.frombuffer(bytes(state["egocentric_view"]), dtype=np.uint8)
             img = cv2.imdecode(img, cv2.IMREAD_COLOR)
