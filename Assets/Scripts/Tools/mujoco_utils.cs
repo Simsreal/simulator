@@ -17,7 +17,32 @@ public class MujocoAPIProxy
     private static readonly int GeomType = 5; // mjtOBJ_GEOM
 
 
-    public unsafe Dictionary<string, RobotJointData> getRobotJointData()
+
+    public unsafe List<double> getQpos()
+    {
+        var mjModel = MjScene.Instance.Model;
+        var mjData = MjScene.Instance.Data;
+        List<double> qpos = new List<double>();
+        for (int i=0; i < mjModel->nq; i++)
+        {
+            qpos.Add(mjData->qpos[i]);
+        }
+        return qpos;
+    }
+
+    public unsafe List<double> getQvel()
+    {
+        var mjModel = MjScene.Instance.Model;
+        var mjData = MjScene.Instance.Data;
+        List<double> qvel = new List<double>();
+        for (int i=0; i < mjModel->nv; i++)
+        {
+            qvel.Add(mjData->qvel[i]);
+        }
+        return qvel;
+    }
+
+    public unsafe Dictionary<string, RobotJointData> getJointData()
     {
         var mjData = MjScene.Instance.Data;
         var mjModel = MjScene.Instance.Model;
@@ -39,7 +64,7 @@ public class MujocoAPIProxy
         return jointStates;
     }
 
-    public unsafe RobotGeomMapping getRobotGeomMapping() {
+    public unsafe RobotGeomMapping getGeomMapping() {
         RobotGeomMapping geomIdNameMapping = new RobotGeomMapping();
         // Dictionary<int, string> idNameMapping = new Dictionary<int, string>();
         Dictionary<string, int> nameIdMapping = new Dictionary<string, int>();
@@ -56,7 +81,7 @@ public class MujocoAPIProxy
     }
 
     // public unsafe string
-    public unsafe RobotJointMapping getRobotJointMapping() {
+    public unsafe RobotJointMapping getJointMapping() {
         RobotJointMapping jointIdNameMapping = new RobotJointMapping();
         // Dictionary<int, string> idNameMapping = new Dictionary<int, string>();
         Dictionary<string, int> nameIdMapping = new Dictionary<string, int>();

@@ -16,6 +16,8 @@ public class RobotFrame
 [Serializable]
 public class RobotState
 {
+    public List<double> qpos;
+    public List<double> qvel;
     public Dictionary<string, RobotJointData> robot_joint_data;
     public RobotGeomMapping robot_geom_mapping;
     public RobotJointMapping robot_joint_mapping;

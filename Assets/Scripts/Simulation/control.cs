@@ -50,9 +50,11 @@ public class MujocoControl : MonoBehaviour
             RobotState state = new RobotState();
             frame.egocentric_view = egocentricView.CaptureViewBytes();
             
-            state.robot_joint_data = mujocoAPIProxy.getRobotJointData();
-            state.robot_geom_mapping = mujocoAPIProxy.getRobotGeomMapping();
-            state.robot_joint_mapping = mujocoAPIProxy.getRobotJointMapping();
+            state.robot_joint_data = mujocoAPIProxy.getJointData();
+            state.robot_geom_mapping = mujocoAPIProxy.getGeomMapping();
+            state.robot_joint_mapping = mujocoAPIProxy.getJointMapping();
+            state.qpos = mujocoAPIProxy.getQpos();
+            state.qvel = mujocoAPIProxy.getQvel();
             frame.robot_state = JsonConvert.SerializeObject(state);
             robotProxy.SendFrame(frame);
 
