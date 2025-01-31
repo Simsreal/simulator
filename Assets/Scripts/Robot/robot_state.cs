@@ -22,6 +22,14 @@ public class RobotGeomIdNameMapping
 }
 
 [Serializable]
+public class RobotJointIdNameMapping
+{
+    public Dictionary<int, string> joint_id_name_mapping;
+    public Dictionary<string, int> joint_name_id_mapping;
+}
+
+
+[Serializable]
 public class RobotJointData
 {
     public double qpos;

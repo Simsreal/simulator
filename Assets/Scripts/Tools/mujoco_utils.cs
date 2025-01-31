@@ -17,20 +17,21 @@ public class MujocoAPIProxy
 
     public unsafe string getRobotJointDataSerialized()
     {
+        const int objType = 3; // mjtOBJ_JOINT
         var mjData = MjScene.Instance.Data;
         var mjModel = MjScene.Instance.Model;
         Dictionary<string, RobotJointData> jointStates = new Dictionary<string, RobotJointData>();
         for (int i=0; i < mjModel->njnt; i++)
         {
-            int jnt_type = mjModel->jnt_type[i];
-            string name = GetObjectName((IntPtr)mjModel, jnt_type, i);
+            // int jnt_type = mjModel->jnt_type[i];
+            string name = GetObjectName((IntPtr)mjModel, objType, i);
             RobotJointData jointData = new RobotJointData();
             if (string.IsNullOrEmpty(name))
             {
                 Debug.LogWarning($"No name found for joint ID {i}");
                 continue;
             }
-            // Debug.Log($"Joint {i} name: {name}");
+            Debug.Log($"Joint type: {objType} name: {name}");
             jointStates[name] = jointData;
         }
 
@@ -38,15 +39,15 @@ public class MujocoAPIProxy
     }
 
     public unsafe string getRobotGeomMappingSerialized() {
-        const int geomType = 5; // mjtOBJ_GEOM
+        const int objType = 5; // mjtOBJ_GEOM
         RobotGeomIdNameMapping geomIdNameMapping = new RobotGeomIdNameMapping();
         Dictionary<int, string> idNameMapping = new Dictionary<int, string>();
         Dictionary<string, int> nameIdMapping = new Dictionary<string, int>();
         var mjModel = MjScene.Instance.Model;
 
         for (int i=0; i < mjModel->ngeom; i++) {
-            // int geomType = mjModel->geom_type[i];
-            string name = GetObjectName((IntPtr)mjModel, geomType, i);
+            // int objType = mjModel->geom_type[i];
+            string name = GetObjectName((IntPtr)mjModel, objType, i);
             idNameMapping[i] = name;
             nameIdMapping[name] = i;
         }
@@ -55,6 +56,7 @@ public class MujocoAPIProxy
         return JsonConvert.SerializeObject(geomIdNameMapping);
     }
 
+    // public unsafe string
 
     public string GetObjectName(IntPtr mjModel, int type, int id)
     {
