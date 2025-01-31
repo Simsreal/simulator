@@ -35,7 +35,7 @@ tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
 
 #### NetMQ
 1. Install [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity)
-2. In `NuGetForUnity` settings, install `NetMQ`.
+2. In `NuGetForUnity` settings, install `NetMQ`, `Newtonsoft.Json`.
 
 
 ## Unity Assets

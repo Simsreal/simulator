@@ -17,11 +17,11 @@ def run_image_subscriber():
     while True:
         try:
             # Receive image or string data from Unity
-            image_bytes = sub_socket.recv()
+            data = sub_socket.recv()
 
             # Try to decode as an image using OpenCV
-            state = json.loads(image_bytes)
-            print(state["robot_joint_data"])
+            state = json.loads(data)
+            print(state.keys())
             img = np.frombuffer(bytes(state["egocentric_view"]), dtype=np.uint8)
             img = cv2.imdecode(img, cv2.IMREAD_COLOR)
             cv2.imshow("Unity -> Python [Subscriber]", img)

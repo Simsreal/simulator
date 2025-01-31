@@ -7,13 +7,21 @@ using Mujoco;
 public class RobotState
 {
     public byte[] egocentric_view;
-    public RobotJointData robot_joint_data;
+    public string robot_joint_data;
+}
+
+[Serializable]
+public class RobotGeomMapping
+{
+    public List<string> names;
+    public List<double> xpos;
+    public List<double> xmat;
 }
 
 [Serializable]
 public class RobotJointData
 {
-    public string name;
+    public List<string> names;
     public List<double> qpos;
     public List<double> qvel;
     public List<double> effort;

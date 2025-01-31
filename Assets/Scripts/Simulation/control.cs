@@ -4,14 +4,13 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 using UnityEngine;
 using Mujoco;
 
 public class MujocoControl : MonoBehaviour
 {
-    [DllImport("mujoco")]
-    private static extern IntPtr mj_id2name(IntPtr m, int type, int id);
-
+    private MujocoUtils mujocoUtils = new MujocoUtils();
     private RobotProxy robotProxy;
     private string cameraName = "egocentric";
 
@@ -46,43 +45,32 @@ public class MujocoControl : MonoBehaviour
         Debug.Log("Successfully initialized MujocoControl.");
     }
 
-    private string GetObjectName(IntPtr mjModel, int type, int id)
-    {
-        IntPtr namePtr = mj_id2name(mjModel, type, id);
-        if (namePtr != IntPtr.Zero)
-        {
-            return Marshal.PtrToStringAnsi(namePtr);
-        }
-        return null;
-    }
-
-    private unsafe RobotJointData getRobotJointData()
+    private unsafe string getRobotJointData()
     {
         var mjData = MjScene.Instance.Data;
         var mjModel = MjScene.Instance.Model;
-        RobotJointData jointStates = new RobotJointData();
-        List<double> qpos = new List<double>();
-        List<double> qvel = new List<double>();
+        Dictionary<string, RobotJointData> jointStates = new Dictionary<string, RobotJointData>();
+        // for (int i=0; i < mjModel->njnt; i++)
+        // {
+        //     int jnt_type = mjModel->jnt_type[i];
+        //     string name = mujocoUtils.GetObjectName((IntPtr)mjModel, jnt_type, i);
+        //     RobotJointData jointData = new RobotJointData();
+        //     if (string.IsNullOrEmpty(name))
+        //     {
+        //         Debug.LogWarning($"No name found for joint ID {i}");
+        //         continue;
+        //     }
+        //     Debug.Log($"Joint {i} name: {name}");
+        //     // jointStates[name] = jointData;
+        // }
 
-        for (int i = 0; i < mjModel->nq; i++)
-        {
-            qpos.Add(mjData->qpos[i]);
-        }
+        return JsonConvert.SerializeObject(jointStates);
+    }
 
-        for (int i = 0; i < mjModel->nv; i++)
-        {
-            qvel.Add(mjData->qvel[i]);
-        }
 
-        for (int i=0; i < mjModel->njnt; i++)
-        {
-            string name = GetObjectName((IntPtr)mjModel, 2, i);
-            Debug.Log(name);
-        }
-
-        jointStates.qpos = qpos;
-        jointStates.qvel = qvel;
-        return jointStates;
+    private unsafe RobotGeomMapping getRobotGeomMapping() {
+        RobotGeomMapping geomMapping = new RobotGeomMapping();
+        return geomMapping;
     }
 
     public unsafe void Update()
