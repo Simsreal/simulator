@@ -49,6 +49,8 @@ public class RobotContact
     public double mu;
     public List<double> pos;
 
+    public List<int> vert;
+
 }
 
 public class RobotGeomMapping

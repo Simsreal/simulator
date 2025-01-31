@@ -91,19 +91,21 @@ public class MujocoAPIProxy
     }
 
     public unsafe RobotContactList getContact() {
-        const int coneHessiaDim = 36;
+        const int coneHessianDim = 36;
         const int elemDim = 2;
         const int flexDim = 2;
         const int frameDim = 9;
         const int frictionDim = 5;
         const int geomDim = 2;
         const int posDim = 3;
+        const int vertDim = 2;
 
         var mjData = MjScene.Instance.Data;
         RobotContactList contact_list = new RobotContactList();
         contact_list.contact = new List<RobotContact>();
         for (int i=0; i < mjData->ncon; i++) {
             RobotContact robot_contact = new RobotContact();
+
             robot_contact.H = new List<double>();
             robot_contact.elem = new List<int>();
             robot_contact.flex = new List<int>();
@@ -111,9 +113,11 @@ public class MujocoAPIProxy
             robot_contact.friction = new List<double>();
             robot_contact.geom = new List<int>();
             robot_contact.pos = new List<double>();
+            robot_contact.vert = new List<int>();
+
             var contact_data = mjData->contact[i];
 
-            for (int j=0; j < coneHessiaDim; j++) {
+            for (int j=0; j < coneHessianDim; j++) {
                 robot_contact.H.Add(contact_data.H[j]);
             }
 
@@ -155,6 +159,10 @@ public class MujocoAPIProxy
 
             for (int j=0; j < posDim; j++) {
                 robot_contact.pos.Add(contact_data.pos[j]);
+            }
+
+            for (int j=0; j < vertDim; j++) {
+                robot_contact.vert.Add(contact_data.vert[j]);
             }
 
             contact_list.contact.Add(robot_contact);

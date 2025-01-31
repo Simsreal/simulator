@@ -51,3 +51,7 @@ All the scripts are located in `Assets/Scripts`.
 ### DllNotFoundException on Linux
 In Unity Editor, Click `Assets -> Reimport All`.
 
+### Humanoid is not colliding with Unity Assets
+1. Check if `collider` has been added to Unity Asset
+2. If not, add `collider` to Unity Asset
+3. Right-click on the Unity Asset and select `Add a matching MuJoCo geom`
