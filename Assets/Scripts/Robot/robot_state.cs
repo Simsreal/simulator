@@ -20,17 +20,16 @@ public class RobotState
     public List<double> qvel;
     public List<double> efc_force;
     public Dictionary<string, RobotJointData> joint_data;
-    public RobotGeomMapping geom_mapping;
+    public GeomMapping geom_mapping;
     public RobotJointMapping joint_mapping;
-    public RobotContactList contact_list;
+    public List<RobotContact> contact_list;
+    public ActuatorMapping actuator_mapping;
 }
 
-[Serializable]
-public class RobotContactList
+public class ActuatorMapping
 {
-    public List<RobotContact> contact;
+    public Dictionary<string, int> actuator_name_id_mapping;
 }
-
 
 public class RobotContact
 {
@@ -54,15 +53,13 @@ public class RobotContact
 
 }
 
-public class RobotGeomMapping
+public class GeomMapping
 {
-    // public Dictionary<int, string> geom_id_name_mapping;
     public Dictionary<string, int> geom_name_id_mapping;
 }
 
 public class RobotJointMapping
 {
-    // public Dictionary<int, string> joint_id_name_mapping;
     public Dictionary<string, int> joint_name_id_mapping;
 }
 

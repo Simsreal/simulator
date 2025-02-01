@@ -50,9 +50,13 @@ public class MujocoAPIProxy
         return efc_force;
     }
 
-    // public unsafe List<string> getBodyGeoms() {
-        
-    // }
+    public unsafe ActuatorMapping getActuatorMapping() {
+        var mjModel = MjScene.Instance.Model;
+        var mjData = MjScene.Instance.Data;
+        ActuatorMapping actuator_mapping = new ActuatorMapping();
+        // actuator.nu = mjModel->nu;
+        return actuator_mapping;
+    }
 
     public unsafe Dictionary<string, RobotJointData> getJointData()
     {
@@ -74,8 +78,8 @@ public class MujocoAPIProxy
         return jointStates;
     }
 
-    public unsafe RobotGeomMapping getGeomMapping() {
-        RobotGeomMapping geomIdNameMapping = new RobotGeomMapping();
+    public unsafe GeomMapping getGeomMapping() {
+        GeomMapping geomIdNameMapping = new GeomMapping();
         Dictionary<string, int> nameIdMapping = new Dictionary<string, int>();
         var mjModel = MjScene.Instance.Model;
 
@@ -103,7 +107,7 @@ public class MujocoAPIProxy
         return jointIdNameMapping;
     }
 
-    public unsafe RobotContactList getContact() {
+    public unsafe List<RobotContact> getContact() {
         const int coneHessianDim = 36;
         const int elemDim = 2;
         const int flexDim = 2;
@@ -114,8 +118,7 @@ public class MujocoAPIProxy
         const int vertDim = 2;
 
         var mjData = MjScene.Instance.Data;
-        RobotContactList contact_list = new RobotContactList();
-        contact_list.contact = new List<RobotContact>();
+        List<RobotContact> contact_list = new List<RobotContact>();
         for (int i=0; i < mjData->ncon; i++) {
             RobotContact robot_contact = new RobotContact();
 
@@ -178,7 +181,7 @@ public class MujocoAPIProxy
                 robot_contact.vert.Add(contact_data.vert[j]);
             }
 
-            contact_list.contact.Add(robot_contact);
+            contact_list.Add(robot_contact);
 
             
         }
