@@ -15,6 +15,7 @@ public class MujocoAPIProxy
     private static extern IntPtr mj_id2name(IntPtr m, int type, int id);
     private static readonly int JointType = 3; // mjtOBJ_JOINT
     private static readonly int GeomType = 5; // mjtOBJ_GEOM
+    private static readonly int ActuatorType = 19; // mjtOBJ_ACTUATOR
 
 
     public unsafe List<double> getQpos()
@@ -54,7 +55,11 @@ public class MujocoAPIProxy
         var mjModel = MjScene.Instance.Model;
         var mjData = MjScene.Instance.Data;
         ActuatorMapping actuator_mapping = new ActuatorMapping();
-        // actuator.nu = mjModel->nu;
+        actuator_mapping.actuator_name_id_mapping = new Dictionary<string, int>();
+        for (int i=0; i < mjModel->nu; i++) {
+            string name = GetObjectName((IntPtr)mjModel, ActuatorType, i);
+            actuator_mapping.actuator_name_id_mapping[name] = i;
+        }
         return actuator_mapping;
     }
 
@@ -65,8 +70,8 @@ public class MujocoAPIProxy
         Dictionary<string, RobotJointData> jointStates = new Dictionary<string, RobotJointData>();
         for (int i=0; i < mjModel->njnt; i++)
         {
-            string name = GetObjectName((IntPtr)mjModel, JointType, i);
             RobotJointData jointData = new RobotJointData();
+            string name = GetObjectName((IntPtr)mjModel, JointType, i);
             if (string.IsNullOrEmpty(name))
             {
                 Debug.LogWarning($"No name found for joint ID {i}");

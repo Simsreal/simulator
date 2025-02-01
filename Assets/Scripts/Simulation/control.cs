@@ -56,6 +56,7 @@ public class MujocoControl : MonoBehaviour
             state.qvel = mujocoAPIProxy.getQvel();
             state.contact_list = mujocoAPIProxy.getContact();
             state.efc_force = mujocoAPIProxy.getEfcForce();
+            state.actuator_mapping = mujocoAPIProxy.getActuatorMapping();
 
             frame.egocentric_view = egocentricView.CaptureViewBytes();
             frame.robot_state = JsonConvert.SerializeObject(state);

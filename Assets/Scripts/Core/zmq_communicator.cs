@@ -51,12 +51,8 @@ public class ZmqCommunicator : IDisposable
     {
         try
         {
-            // The first frame is the topic (if you use them), or the entire message.
-            // By default, we subscribed to "", so we’ll receive everything.
             var message = e.Socket.ReceiveFrameString();
             Debug.Log($"Received from Python: {message}");
-
-            // Process or store the message as needed...
         }
         catch (Exception ex)
         {
@@ -75,7 +71,6 @@ public class ZmqCommunicator : IDisposable
         try
         {
             publisher.SendFrame(JsonUtility.ToJson(frame));
-            // Debug.Log($"Published message: {frame.message}");
         }
         catch (Exception e)
         {
