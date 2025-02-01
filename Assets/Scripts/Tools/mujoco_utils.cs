@@ -41,6 +41,19 @@ public class MujocoAPIProxy
         return qvel;
     }
 
+    public unsafe List<double> getEfcForce() {
+        var mjData = MjScene.Instance.Data;
+        List<double> efc_force = new List<double>();
+        for (int i=0; i < mjData->nefc; i++) {
+            efc_force.Add(mjData->efc_force[i]);
+        }
+        return efc_force;
+    }
+
+    // public unsafe List<string> getBodyGeoms() {
+        
+    // }
+
     public unsafe Dictionary<string, RobotJointData> getJointData()
     {
         var mjData = MjScene.Instance.Data;

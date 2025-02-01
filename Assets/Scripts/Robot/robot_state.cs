@@ -18,10 +18,11 @@ public class RobotState
 {
     public List<double> qpos;
     public List<double> qvel;
-    public Dictionary<string, RobotJointData> robot_joint_data;
-    public RobotGeomMapping robot_geom_mapping;
-    public RobotJointMapping robot_joint_mapping;
-    public RobotContactList robot_contact_list;
+    public List<double> efc_force;
+    public Dictionary<string, RobotJointData> joint_data;
+    public RobotGeomMapping geom_mapping;
+    public RobotJointMapping joint_mapping;
+    public RobotContactList contact_list;
 }
 
 [Serializable]
