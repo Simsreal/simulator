@@ -1,7 +1,9 @@
 using System;
 using NetMQ;
 using NetMQ.Sockets;
+using Newtonsoft.Json;
 using UnityEngine;
+using Mujoco;
 
 public class ZmqCommunicator : IDisposable
 {
@@ -47,12 +49,21 @@ public class ZmqCommunicator : IDisposable
     }
 
     // Called by NetMQPoller every time the subscriber has a message.
-    private void OnSubscriberMessageReceived(object sender, NetMQSocketEventArgs e)
+    private unsafe void OnSubscriberMessageReceived(object sender, NetMQSocketEventArgs e)
     {
         try
         {
             var message = e.Socket.ReceiveFrameString();
-            Debug.Log($"Received from Python: {message}");
+
+            // Deserialize the JSON string into the Cmds class
+            Cmds cmds = JsonConvert.DeserializeObject<Cmds>(message);
+
+            var mjData = MjScene.Instance.Data;
+            var mjModel = MjScene.Instance.Model;
+
+            for (int i=0; i < mjModel->nu; i++) {
+                mjData->ctrl[i] = cmds.torques[i];
+            }   
         }
         catch (Exception ex)
         {
