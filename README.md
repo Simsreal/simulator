@@ -2,6 +2,20 @@
 |:-:|:-:|:-:|
 | <a href="https://github.com/google-deepmind/mujoco"><img src="./Assets/src/images.jpg" alt="mujoco" width="300"></a> | <a href="https://mujoco.readthedocs.io/en/stable/unity.html"><img src="./Assets/src/Unity_2021.svg" alt="unity" width="300"></a> | <a href="https://github.com/GlitchEnzo/NuGetForUnity"><img src="./Assets/src/8075215.png" alt="nuget" width="300"></a> |
 
+# Table of Contents
+
+- [Prerequisites](#prerequisites)
+  - [Unity](#unity)
+  - [Unity Project setup](#unity-project-setup)
+  - [Unity Plugins](#unity-plugins)
+    - [Mujoco](#mujoco)
+    - [NuGetForUnity](#nugetforunity)
+    - [NetMQ](#netmq)
+    - [Newtonsoft.Json](#newtonsoftjson)
+  - [Unity Scripts](#unity-scripts)
+  - [Unity Assets](#unity-assets)
+- [Unity Scenes](#unity-scenes)
+- [FAQs](#faqs)
 
 ## Prerequisites
 
@@ -46,7 +60,7 @@ A humanoid model should be shown in the scene.
 1. In menu, click `Nuget -> Manage NuGet Packages`
 2. Click `Install` button to install `Newtonsoft.Json`.
 
-## Unity Scripts
+### Unity Scripts
 All the scripts are located in `Assets/Scripts`.
 
 To enable Mujoco API usage:
@@ -59,10 +73,13 @@ To apply Mujoco scripts
 1. In Project folder, go to `Assets->Scripts->Simulation`
 2. Drag and drop `control.cs` to the `humanoid` game object.
 
-## Unity Assets
+### Unity Assets
 * [Starter Assets](https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526) (free)
 * [Animal pack deluxe](https://assetstore.unity.com/packages/3d/characters/animals/animal-pack-deluxe-99702)
 * [The Visual Engine](https://assetstore.unity.com/packages/tools/utilities/the-visual-engine-286827?srsltid=AfmBOooEvsmJ4lYwBSmDCvyxRAC9RLq3f43LRQoHwi4ART23U_QAzOFR)
+
+## Unity Scenes
+
 
 ## FAQs
 
