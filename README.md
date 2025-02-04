@@ -46,20 +46,35 @@ A humanoid model should be shown in the scene.
 1. In menu, click `Nuget -> Manage NuGet Packages`
 2. Click `Install` button to install `Newtonsoft.Json`.
 
+## Unity Scripts
+All the scripts are located in `Assets/Scripts`.
+
 
 ## Unity Assets
 * [Starter Assets](https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526) (free)
 * [Animal pack deluxe](https://assetstore.unity.com/packages/3d/characters/animals/animal-pack-deluxe-99702)
 * [The Visual Engine](https://assetstore.unity.com/packages/tools/utilities/the-visual-engine-286827?srsltid=AfmBOooEvsmJ4lYwBSmDCvyxRAC9RLq3f43LRQoHwi4ART23U_QAzOFR)
 
-## Unity Scripts
-All the scripts are located in `Assets/Scripts`.
-
 ## FAQs
-### DllNotFoundException on Linux
-In Unity Editor, Click `Assets -> Reimport All`.
+
+### Imported humanoid and components are in purple color
+<details>
+<summary>Click to expand</summary>
+
+</details>
 
 ### Humanoid is not colliding with Unity Assets
+<details>
+<summary>Click to expand</summary>
+
 1. Check if `collider` has been added to Unity Asset
 2. If not, add `collider` to Unity Asset
 3. Right-click on the Unity Asset and select `Add a matching MuJoCo geom`
+</details>
+
+### DllNotFoundException on Linux
+<details>
+<summary>Click to expand</summary>
+
+In Unity Editor, Click `Assets -> Reimport All`.
+</details>
