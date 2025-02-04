@@ -24,7 +24,15 @@ In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select th
 1. In Unity editor, go to `Window -> Package Manager`
 2. Click `+` button and select `Install package from disk`
 3. Select the path as `mujoco/unity/package.json`.
-4. Click `Install` button.
+4. Click `Install` button to install mujoco `3.2.7`.
+
+Verify the installation by
+1. `Assets -> Import an MJCF scene`
+2. select `Assets/MJCF/humanoid.xml` and open
+
+A humanoid model should be shown in the scene.
+
+
 
 If you are on Linux, setup the `.so` DLL as well:
 ```bash
