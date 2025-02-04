@@ -10,14 +10,17 @@ public class ZmqCommunicator : IDisposable
     private PublisherSocket publisher;
     private SubscriberSocket subscriber;
     private NetMQPoller poller;
-    private bool isRunning = false;
+    private volatile bool isRunning = false;
 
     public ZmqCommunicator(
-        string pubAddress = "tcp://*:5556",
+        string pubAddress = "tcp://0.0.0.0:5556",
         string subAddress = "tcp://localhost:5557")
     {
         try
         {
+            // A document says that is necessary
+            AsyncIO.ForceDotNet.Force();
+
             // 1) Publisher for sending images/text from Unity.
             publisher = new PublisherSocket();
             // Bind so Python subscribers can connect.
@@ -31,8 +34,8 @@ public class ZmqCommunicator : IDisposable
             subscriber.Subscribe("");
 
             // Use a NetMQPoller to handle incoming subscriber messages asynchronously.
-            poller = new NetMQPoller { subscriber };
             subscriber.ReceiveReady += OnSubscriberMessageReceived;
+            poller = new NetMQPoller { subscriber };
             poller.RunAsync();
 
             isRunning = true;
@@ -44,6 +47,7 @@ public class ZmqCommunicator : IDisposable
         catch (Exception e)
         {
             Debug.LogError($"Failed to initialize ZMQ: {e.Message}");
+            Dispose();
             isRunning = false;
         }
     }
@@ -51,6 +55,11 @@ public class ZmqCommunicator : IDisposable
     // Called by NetMQPoller every time the subscriber has a message.
     private unsafe void OnSubscriberMessageReceived(object sender, NetMQSocketEventArgs e)
     {
+        if (!isRunning)
+        {
+            return;
+        }
+
         try
         {
             var message = e.Socket.ReceiveFrameString();
@@ -94,6 +103,11 @@ public class ZmqCommunicator : IDisposable
 
         try
         {
+            if (subscriber != null)
+            {
+                subscriber.ReceiveReady -= OnSubscriberMessageReceived;
+            }
+
             poller?.Stop();
             poller?.Dispose();
             
@@ -102,6 +116,9 @@ public class ZmqCommunicator : IDisposable
 
             publisher?.Close();
             publisher?.Dispose();
+
+            // Cleanup all things relate to NetMQ
+            NetMQConfig.Cleanup();
 
             Debug.Log("ZMQ Communicator disposed.");
         }
