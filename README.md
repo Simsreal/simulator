@@ -49,6 +49,15 @@ A humanoid model should be shown in the scene.
 ## Unity Scripts
 All the scripts are located in `Assets/Scripts`.
 
+To enable Mujoco API usage:
+1. In menu, click `Edit -> Project Settings`
+2. Click `Player` tab
+3. In platform settings, click `Other Settings`
+4. Search for `allow unsafe code` and check the box.
+
+To apply Mujoco scripts
+1. In Project folder, go to `Assets->Scripts->Simulation`
+2. Drag and drop `control.cs` to the `humanoid` game object.
 
 ## Unity Assets
 * [Starter Assets](https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526) (free)

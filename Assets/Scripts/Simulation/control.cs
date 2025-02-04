@@ -18,7 +18,7 @@ public class MujocoControl : MonoBehaviour
     public float sendInterval = 0.1f;
     public int egocentricViewWidth = 640;
     public int egocentricViewHeight = 480;
-    public string MJCFXMLPath = Application.dataPath + "/Assets/MJCF/humanoid.xml";
+    public string MJCFXMLPath = Application.dataPath + "/MJCF/humanoid.xml";
 
     
     void Start()
