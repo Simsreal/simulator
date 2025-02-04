@@ -27,23 +27,24 @@ In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select th
 4. Click `Install` button to install mujoco `3.2.7`.
 
 Verify the installation by
-1. `Assets -> Import an MJCF scene`
+1. In menu, click`Assets -> Import an MJCF scene`
 2. select `Assets/MJCF/humanoid.xml` and open
 
 A humanoid model should be shown in the scene.
 
-
-
-If you are on Linux, setup the `.so` DLL as well:
-```bash
-wget https://github.com/google-deepmind/mujoco/releases/download/3.2.7/mujoco-3.2.7-linux-x86_64.tar.gz
-mkdir -p ~/.mujoco
-tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
-```
+#### NuGetForUnity
+1. In Unity editor, go to `Window -> Package Manager`
+2. Click + button on the upper-left of a window, and select `Add package from git URL...`
+3. Enter the following URL and click Add button
+`https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity`
 
 #### NetMQ
-1. Install [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity)
-2. In `NuGetForUnity` settings, install `NetMQ`, `Newtonsoft.Json`.
+1. In menu, click `Nuget -> Manage NuGet Packages`
+2. Click `Install` button to install `NetMQ`.
+
+#### Newtonsoft.Json
+1. In menu, click `Nuget -> Manage NuGet Packages`
+2. Click `Install` button to install `Newtonsoft.Json`.
 
 
 ## Unity Assets
