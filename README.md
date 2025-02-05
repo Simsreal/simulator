@@ -2,20 +2,6 @@
 |:-:|:-:|:-:|
 | <a href="https://github.com/google-deepmind/mujoco"><img src="./Assets/src/images.jpg" alt="mujoco" width="300"></a> | <a href="https://mujoco.readthedocs.io/en/stable/unity.html"><img src="./Assets/src/Unity_2021.svg" alt="unity" width="300"></a> | <a href="https://github.com/GlitchEnzo/NuGetForUnity"><img src="./Assets/src/8075215.png" alt="nuget" width="300"></a> |
 
-# Table of Contents
-
-- [Prerequisites](#prerequisites)
-  - [Unity](#unity)
-  - [Unity Project setup](#unity-project-setup)
-  - [Unity Plugins](#unity-plugins)
-    - [Mujoco](#mujoco)
-    - [NuGetForUnity](#nugetforunity)
-    - [NetMQ](#netmq)
-    - [Newtonsoft.Json](#newtonsoftjson)
-  - [Unity Scripts](#unity-scripts)
-  - [Unity Assets](#unity-assets)
-- [Unity Scenes](#unity-scenes)
-- [FAQs](#faqs)
 
 ## Prerequisites
 
@@ -38,74 +24,36 @@ In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select th
 1. In Unity editor, go to `Window -> Package Manager`
 2. Click `+` button and select `Install package from disk`
 3. Select the path as `mujoco/unity/package.json`.
-4. Click `Install` button to install mujoco `3.2.7`.
+4. Click `Install` button.
 
-Verify the installation by
-1. In menu, click`Assets -> Import an MJCF scene`
-2. select `Assets/MJCF/humanoid.xml` and open
-
-A humanoid model should be shown in the scene.
-
-#### NuGetForUnity
-1. In Unity editor, go to `Window -> Package Manager`
-2. Click + button on the upper-left of a window, and select `Add package from git URL...`
-3. Enter the following URL and click Add button
-`https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity`
+If you are on Linux, setup the `.so` DLL as well:
+```bash
+wget https://github.com/google-deepmind/mujoco/releases/download/3.2.7/mujoco-3.2.7-linux-x86_64.tar.gz
+mkdir -p ~/.mujoco
+tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
+```
 
 #### NetMQ
-1. In menu, click `Nuget -> Manage NuGet Packages`
-2. Click `Install` button to install `NetMQ`.
+1. Install [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity)
+2. In `NuGetForUnity` settings, install `NetMQ`, `Newtonsoft.Json`.
 
-#### Newtonsoft.Json
-1. In menu, click `Nuget -> Manage NuGet Packages`
-2. Click `Install` button to install `Newtonsoft.Json`.
 
-### Unity Scripts
-All the scripts are located in `Assets/Scripts`.
-
-To enable Mujoco API usage:
-1. In menu, click `Edit -> Project Settings`
-2. Click `Player` tab
-3. In platform settings, click `Other Settings`
-4. Search for `allow unsafe code` and check the box.
-
-To apply Mujoco scripts
-1. In Project folder, go to `Assets->Scripts->Simulation`
-2. Drag and drop `control.cs` to the `humanoid` game object.
-
-### Unity Assets
+## Unity Assets
 * [Starter Assets](https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526) (free)
 * [Animal pack deluxe](https://assetstore.unity.com/packages/3d/characters/animals/animal-pack-deluxe-99702)
 * [The Visual Engine](https://assetstore.unity.com/packages/tools/utilities/the-visual-engine-286827?srsltid=AfmBOooEvsmJ4lYwBSmDCvyxRAC9RLq3f43LRQoHwi4ART23U_QAzOFR)
 
-## Unity Scenes
-
+## Unity Scripts
+All the scripts are located in `Assets/Scripts`.
 
 ## FAQs
-
-### Imported humanoid and components are in purple color
-<details>
-<summary>Click to expand</summary>
-
-</details>
+### DllNotFoundException on Linux
+In Unity Editor, Click `Assets -> Reimport All`.
 
 ### Humanoid is not colliding with Unity Assets
-<details>
-<summary>Click to expand</summary>
-
 1. Check if `collider` has been added to Unity Asset
 2. If not, add `collider` to Unity Asset
 3. Right-click on the Unity Asset and select `Add a matching MuJoCo geom`
-<<<<<<< HEAD
-</details>
-
-### DllNotFoundException on Linux
-<details>
-<summary>Click to expand</summary>
-
-In Unity Editor, Click `Assets -> Reimport All`.
-</details>
-=======
 
 ### Unable to Establish NetMQ Connection Between *Simsreal* and *Simulator*
 
@@ -133,4 +81,3 @@ If you're using *WSL2* with NAT to run *Simsreal*, ensure that inbound connectio
 		-Action Allow
 	```
 	**Note:** Replace `"vEthernet (WSL)"` with the actual adapter name you found in the previous step.
->>>>>>> b9d4e9f (Added instructions related to WSL2 and fireware.)
