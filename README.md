@@ -33,9 +33,12 @@ git submodule update --init --recursive
 In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select the path to the cloned `simulator` folder.
 
 ## Setup
-Double click on the added `simulator` in Unity Hub to open the project. When prompted, click `Ignore` to setup the Unity Plugins without entering safe mode if you are opening the project for the first time.
+Double click on the added `simulator` in Unity Hub to open the project. You must enter the safe mode to setup the Unity Plugins if you are opening the project for the first time you open the project. 
 
-Follow the instructions below to setup the Unity Plugins.
+> **Note:** At this moment, entering the safe mode is necessary for the first time to make sure Mujoco and NuGetForUnity are properly set up and working.
+
+
+In the safe mode, follow the instructions below to setup the Unity Plugins.
 
 ### Unity Plugins
 
@@ -58,6 +61,10 @@ tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
 3. Enter the following URL and click Add button
 `https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity`
 
+
+Now, you may exit the safe mode by clicking `Exit Safe Mode` button.
+### NuGet Packages
+
 #### NetMQ
 1. In menu, click `Nuget -> Manage NuGet Packages`
 2. Search for `NetMQ` and click `Install` button to install `NetMQ`.
@@ -65,6 +72,8 @@ tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
 #### Newtonsoft.Json
 1. In menu, click `Nuget -> Manage NuGet Packages`
 2. Search for `Newtonsoft.Json` and click `Install` button to install `Newtonsoft.Json`.
+
+Now, click `Assets -> Reimport All` to reimport all the assets.
 
 ### MJCF Import
 1. In menu, click `Assets -> Import MJCF scene`
