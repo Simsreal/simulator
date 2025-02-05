@@ -54,3 +54,30 @@ In Unity Editor, Click `Assets -> Reimport All`.
 1. Check if `collider` has been added to Unity Asset
 2. If not, add `collider` to Unity Asset
 3. Right-click on the Unity Asset and select `Add a matching MuJoCo geom`
+
+### Unable to Establish NetMQ Connection Between *Simsreal* and *Simulator*
+
+1. Please check the network configuration in `zmq_communicator.cs` and ensure that the IP addresses are correct.
+
+2. Verify your firewall configuration to allow the following connections:
+   - Ports: 5556, 5557;
+   - Programs: Python, Unity, Unity Editor.
+
+#### Notes Specific to WSL2
+If you're using *WSL2* with NAT to run *Simsreal*, ensure that inbound connections from WSL are allowed. By default, Windows firewall blocks all inbound connections from WSL.
+
+1. Press `WIN + X`, then press `A` to open a terminal with administrator privileges.
+2. Check the network interface name of WSL using the following command:
+   ```powershell
+   Get-NetAdapter | Where-Object Name -like "*WSL*" | Select-Object Name
+   ```
+   Typically, the interface name will be `vEthernet (WSL)` or `vEthernet (WSL (Hyper-V firewall))`.
+3. Use the following PowerShell command to allow all inbound connections from WSL:
+	```powershell
+	New-NetFirewallRule -Name WSLAllowAllInbound `
+		-DisplayName "Allow WSL Inbound" `
+		-Direction Inbound `
+		-InterfaceAlias "vEthernet (WSL)" `
+		-Action Allow
+	```
+	**Note:** Replace `"vEthernet (WSL)"` with the actual adapter name you found in the previous step.
