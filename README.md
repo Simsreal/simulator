@@ -20,7 +20,11 @@
 ## Prerequisites
 
 ### Unity
-Install [Unity Hub](https://unity.com/download). The workspace version is `6000.0.32f1`.
+#### Windows
+Use this [Unity Hub Installer](https://drive.google.com/drive/folders/18VKY69ofg_3-jpWz3PNjgf8kUBLiDnRI) to install Unity Hub.
+
+#### Linux
+Install Unity Hub by following this [guide](https://docs.unity3d.com/hub/manual/InstallHub.html).
 
 ### Clone the repository
 First, clone the repository and initialize the submodule (This assumes you already have `git` and `ssh` setup).
