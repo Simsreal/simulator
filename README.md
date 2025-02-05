@@ -19,7 +19,10 @@ git submodule update --init --recursive
 In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select the path to the cloned `simulator` folder.
 
 ## Setup
-Double click on the added `simulator` in Unity Hub to open the project. You must enter the safe mode to setup the Unity Plugins if you are opening the project for the first time. Please note that entering the safe mode is necessary for first-time to make sure all the Unity Plugins are properly setup and working.
+Double click on the added `simulator` in Unity Hub to open the project. You must enter the safe mode to setup the Unity Plugins if you are opening the project for the first time you open the project. 
+
+> **Note:** At this moment, entering the safe mode is necessary for the first time to make sure all the Unity Plugins are properly set up and working.
+
 
 In the safe mode, follow the instructions below to setup the Unity Plugins.
 
