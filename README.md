@@ -106,8 +106,12 @@ To apply Mujoco scripts
 ## Unity Scenes
 
 ## FAQs
-### DllNotFoundException on Linux
-In Unity Editor, Click `Assets -> Reimport All`.
+### DllNotFoundException on Windows
+1. Download the `mujoco-3.2.7-windows-x86_64.zip` from [here](https://github.com/google-deepmind/mujoco/releases/download/3.2.7/mujoco-3.2.7-windows-x86_64.zip)
+2. Create a folder named `MuJoCo` at your user directory, i.e. `C:\Users\<username>\`
+3. Unzip the file at `C:\Users\<username>\MuJoCo\`
+
+After the installation, click `Assets -> Reimport All` to reimport all the assets.
 
 ### Humanoid is not colliding with Unity Assets
 1. Check if `collider` has been added to Unity Asset
