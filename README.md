@@ -120,10 +120,11 @@ After the installation, click `Assets -> Reimport All` to reimport all the asset
 
 ### Unable to Establish NetMQ Connection Between *Simsreal* and *Simulator*
 
-1. Please check the network configuration in `zmq_communicator.cs` and ensure that the IP addresses are correct.
+1. Please check the network configuration in `zmq_config.json` and ensure that the IP addresses are correct. The pub address should be local address or any address (0.0.0.0), the sub address should be simsreal's address.
+   `zmq_config.json` can be found under the [persistent data path](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Application-persistentDataPath.html). The company name is `Simsreal` and the product name is `simulator`.
 
 2. Verify your firewall configuration to allow the following connections:
-   - Ports: 5556, 5557;
+   - Ports: 5556, 5557, or any ports you specified in `zmq_config.json`;
    - Programs: Python, Unity, Unity Editor.
 
 #### Notes Specific to WSL2
