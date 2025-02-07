@@ -3,12 +3,30 @@
 | <a href="https://github.com/google-deepmind/mujoco"><img src="./Assets/src/images.jpg" alt="mujoco" width="300"></a> | <a href="https://mujoco.readthedocs.io/en/stable/unity.html"><img src="./Assets/src/Unity_2021.svg" alt="unity" width="300"></a> | <a href="https://github.com/GlitchEnzo/NuGetForUnity"><img src="./Assets/src/8075215.png" alt="nuget" width="300"></a> |
 
 
+# Table of Contents
+- [Prerequisites](#prerequisites)
+  - [Unity](#unity)
+  - [Unity Project setup](#unity-project-setup)
+  - [Unity Plugins](#unity-plugins)
+    - [Mujoco](#mujoco)
+    - [NuGetForUnity](#nugetforunity)
+    - [NetMQ](#netmq)
+    - [Newtonsoft.Json](#newtonsoftjson)
+  - [Unity Scripts](#unity-scripts)
+  - [Unity Assets](#unity-assets)
+- [Unity Scenes](#unity-scenes)
+- [FAQs](#faqs)
+
 ## Prerequisites
 
 ### Unity
-Install [Unity Hub](https://unity.com/download). The workspace version is `6000.0.32f1`.
+#### Windows
+Use this [Unity Hub Installer](https://drive.google.com/drive/folders/18VKY69ofg_3-jpWz3PNjgf8kUBLiDnRI) to install Unity Hub.
 
-### Unity Project setup
+#### Linux
+Install Unity Hub by following this [guide](https://docs.unity3d.com/hub/manual/InstallHub.html).
+
+### Clone the repository
 First, clone the repository and initialize the submodule (This assumes you already have `git` and `ssh` setup).
 ```bash
 git clone git@github.com:Simsreal/simulator.git
@@ -18,37 +36,82 @@ git submodule update --init --recursive
 
 In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select the path to the cloned `simulator` folder.
 
+## Setup
+Double click on the added `simulator` in Unity Hub to open the project. You must enter the safe mode to setup the Unity Plugins if you are opening the project for the first time you open the project. 
+
+> **Note:** At this moment, entering the safe mode is necessary for the first time to make sure Mujoco and NuGetForUnity are properly set up and working.
+
+
+In the safe mode, follow the instructions below to setup the Unity Plugins.
+
 ### Unity Plugins
 
 #### Mujoco
 1. In Unity editor, go to `Window -> Package Manager`
 2. Click `+` button and select `Install package from disk`
 3. Select the path as `mujoco/unity/package.json`.
-4. Click `Install` button.
+4. Click `Install` button to install mujoco `3.2.7`.
 
-If you are on Linux, setup the `.so` DLL as well:
+<!-- If you are on Linux, setup the `.so` DLL as well:
 ```bash
 wget https://github.com/google-deepmind/mujoco/releases/download/3.2.7/mujoco-3.2.7-linux-x86_64.tar.gz
 mkdir -p ~/.mujoco
 tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
-```
+``` -->
+
+#### NuGetForUnity
+1. In Unity editor, go to `Window -> Package Manager`
+2. Click + button on the upper-left of a window, and select `Add package from git URL`
+3. Enter the following URL and click Add button
+`https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity`
+
+
+Now, you may exit the safe mode by clicking `Exit Safe Mode` button.
+### NuGet Packages
 
 #### NetMQ
-1. Install [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity)
-2. In `NuGetForUnity` settings, install `NetMQ`, `Newtonsoft.Json`.
+1. In menu, click `Nuget -> Manage NuGet Packages`
+2. Search for `NetMQ` and click `Install` button to install `NetMQ`.
+
+#### Newtonsoft.Json
+1. In menu, click `Nuget -> Manage NuGet Packages`
+2. Search for `Newtonsoft.Json` and click `Install` button to install `Newtonsoft.Json`.
+
+Now, click `Assets -> Reimport All` to reimport all the assets.
+
+### MJCF Import
+1. In menu, click `Assets -> Import MJCF scene`
+2. Select `simulator/Assets/MJCF/humanoid.xml` and click `Open` button
+3. A humanoid model should be shown in the scene.
+
+### Unity Scripts
+All the scripts are located in `Assets/Scripts`.
+
+To enable Mujoco API usage:
+1. In menu, click `Edit -> Project Settings`
+2. Click `Player` tab
+3. In platform settings, click `Other Settings`
+4. Search for `allow unsafe code` and check the box.
+To apply Mujoco scripts
+1. In Project folder, go to `Assets->Scripts->Simulation`
+2. Drag and drop `control.cs` to the `humanoid` game object.
 
 
-## Unity Assets
+### Unity Assets
 * [Starter Assets](https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526) (free)
 * [Animal pack deluxe](https://assetstore.unity.com/packages/3d/characters/animals/animal-pack-deluxe-99702)
 * [The Visual Engine](https://assetstore.unity.com/packages/tools/utilities/the-visual-engine-286827?srsltid=AfmBOooEvsmJ4lYwBSmDCvyxRAC9RLq3f43LRQoHwi4ART23U_QAzOFR)
 
-## Unity Scripts
-All the scripts are located in `Assets/Scripts`.
+
+## Unity Scenes
 
 ## FAQs
-### DllNotFoundException on Linux
-In Unity Editor, Click `Assets -> Reimport All`.
+### DllNotFoundException on Windows
+1. Download the `mujoco-3.2.7-windows-x86_64.zip` from [here](https://github.com/google-deepmind/mujoco/releases/download/3.2.7/mujoco-3.2.7-windows-x86_64.zip)
+2. Create a folder named `MuJoCo` at your user directory, i.e. `C:\Users\<username>\`
+3. Unzip the file at `C:\Users\<username>\MuJoCo\`
+
+After the installation, click `Assets -> Reimport All` to reimport all the assets.
 
 ### Humanoid is not colliding with Unity Assets
 1. Check if `collider` has been added to Unity Asset
@@ -57,10 +120,11 @@ In Unity Editor, Click `Assets -> Reimport All`.
 
 ### Unable to Establish NetMQ Connection Between *Simsreal* and *Simulator*
 
-1. Please check the network configuration in `zmq_communicator.cs` and ensure that the IP addresses are correct.
+1. Please check the network configuration in `zmq_config.json` and ensure that the IP addresses are correct. The pub address should be local address or any address (0.0.0.0), the sub address should be simsreal's address.
+   `zmq_config.json` can be found under the [persistent data path](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Application-persistentDataPath.html). The company name is `Simsreal` and the product name is `simulator`.
 
 2. Verify your firewall configuration to allow the following connections:
-   - Ports: 5556, 5557;
+   - Ports: 5556, 5557, or any ports you specified in `zmq_config.json`;
    - Programs: Python, Unity, Unity Editor.
 
 #### Notes Specific to WSL2

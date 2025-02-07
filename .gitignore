@@ -2,9 +2,14 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+simulator/
 plastic/
+Packages/
 Assets/BOXOPHOBIC*
 Assets/StarterAssets*
+Assets/Local*
+Assets/NuGet*
+# Assets/Packages*
 
 /[Ll]ibrary/
 /[Tt]emp/
@@ -74,8 +79,4 @@ crashlytics-build.properties
 
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
-<<<<<<< HEAD
 /[Aa]ssets/[Ss]treamingAssets/aa/*
-=======
-/[Aa]ssets/[Ss]treamingAssets/aa/*
->>>>>>> 662a41207dcf35c2082adf44f951b57c57ffb672
