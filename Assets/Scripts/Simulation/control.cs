@@ -18,11 +18,12 @@ public class MujocoControl : MonoBehaviour
     public float sendInterval = 0.1f;
     public int egocentricViewWidth = 640;
     public int egocentricViewHeight = 480;
-    public string MJCFXMLPath = Application.dataPath + "/MJCF/humanoid.xml";
-
+    protected string MJCFXMLPath;
+    public string MjcfXmlRelativePath = "/MJCF/humanoid.xml";
     
     void Start()
     {
+        MJCFXMLPath = Application.dataPath + MjcfXmlRelativePath;
         Debug.Log(MJCFXMLPath);
         robotProxy = gameObject.GetComponent<RobotProxy>();
         if (robotProxy == null)
