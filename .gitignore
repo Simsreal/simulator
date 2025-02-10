@@ -4,11 +4,14 @@
 #
 simulator/
 plastic/
-Packages/
+
+# Exclude binary files imported by NuGet
+/Assets/Packages/
+/Assets/Packages.meta
+
 Assets/BOXOPHOBIC*
 Assets/StarterAssets*
 Assets/Local*
-Assets/NuGet*
 # Assets/Packages*
 
 /[Ll]ibrary/
