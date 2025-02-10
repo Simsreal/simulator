@@ -37,8 +37,11 @@ git submodule update --init --recursive
 In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select the path to the cloned `simulator` folder.
 
 ## Setup
-Double click on the added `simulator` in Unity Hub to open the project. You must enter the safe mode to setup the Unity Plugins if you are opening the project for the first time you open the project. 
+1. Double click on the added `simulator` in Unity Hub to open the project.
 
+2. On first opening the project, Unity may prompt you to enter Safe Mode due to missing NuGet packages. **Ignore the prompt** to let NuGet resolve and install the packages.
+
+<!-- 
 > **Note:** At this moment, entering the safe mode is necessary for the first time to make sure Mujoco and NuGetForUnity are properly set up and working.
 
 
@@ -52,12 +55,12 @@ In the safe mode, follow the instructions below to setup the Unity Plugins.
 3. Select the path as `mujoco/unity/package.json`.
 4. Click `Install` button to install mujoco `3.2.7`.
 
-<!-- If you are on Linux, setup the `.so` DLL as well:
+If you are on Linux, setup the `.so` DLL as well:
 ```bash
 wget https://github.com/google-deepmind/mujoco/releases/download/3.2.7/mujoco-3.2.7-linux-x86_64.tar.gz
 mkdir -p ~/.mujoco
 tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
-``` -->
+```
 
 #### NuGetForUnity
 1. In Unity editor, go to `Window -> Package Manager`
@@ -95,7 +98,7 @@ To enable Mujoco API usage:
 To apply Mujoco scripts
 1. In Project folder, go to `Assets->Scripts->Simulation`
 2. Drag and drop `control.cs` to the `humanoid` game object.
-
+-->
 
 ### Unity Assets
 * [Starter Assets](https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526) (free)
@@ -104,6 +107,10 @@ To apply Mujoco scripts
 
 
 ## Unity Scenes
+Navigate to `Assets/Scenes/` in the Unity Editor, open the simsrealunity.
+
+## Run
+1. Open a scene, click the Play button in Unity.
 
 ## FAQs
 ### DllNotFoundException on Windows
