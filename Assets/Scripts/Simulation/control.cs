@@ -63,6 +63,8 @@ public class MujocoControl : MonoBehaviour
             frame.robot_state = JsonConvert.SerializeObject(state);
             robotProxy.SendFrame(frame);
 
+            mujocoAPIProxy.GetData();
+
         }
     }
 }

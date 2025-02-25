@@ -9,6 +9,42 @@ using Mujoco;
 /// Mujoco API reference:
 /// https://mujoco.readthedocs.io/en/stable/APIreference/APItypes.html#mjtobj
 /// </summary>
+/// 
+
+public enum mjtObj_ {            // type of MujoCo object
+  mjOBJ_UNKNOWN       = 0,        // unknown object type
+  mjOBJ_BODY,                     // body
+  mjOBJ_XBODY,                    // body, used to access regular frame instead of i-frame
+  mjOBJ_JOINT,                    // joint
+  mjOBJ_DOF,                      // dof
+  mjOBJ_GEOM,                     // geom
+  mjOBJ_SITE,                     // site
+  mjOBJ_CAMERA,                   // camera
+  mjOBJ_LIGHT,                    // light
+  mjOBJ_FLEX,                     // flex
+  mjOBJ_MESH,                     // mesh
+  mjOBJ_SKIN,                     // skin
+  mjOBJ_HFIELD,                   // heightfield
+  mjOBJ_TEXTURE,                  // texture
+  mjOBJ_MATERIAL,                 // material for rendering
+  mjOBJ_PAIR,                     // geom pair to include
+  mjOBJ_EXCLUDE,                  // body pair to exclude
+  mjOBJ_EQUALITY,                 // equality constraint
+  mjOBJ_TENDON,                   // tendon
+  mjOBJ_ACTUATOR,                 // actuator
+  mjOBJ_SENSOR,                   // sensor
+  mjOBJ_NUMERIC,                  // numeric
+  mjOBJ_TEXT,                     // text
+  mjOBJ_TUPLE,                    // tuple
+  mjOBJ_KEY,                      // keyframe
+  mjOBJ_PLUGIN,                   // plugin instance
+
+  mjNOBJECT,                      // number of object types
+
+  // meta elements, do not appear in mjModel
+  mjOBJ_FRAME         = 100       // frame
+};
+
 public class MujocoAPIProxy
 {
     [DllImport("mujoco")]
@@ -191,6 +227,13 @@ public class MujocoAPIProxy
             
         }
         return contact_list;
+    }
+
+    public unsafe void GetData() {
+        var mjData = MjScene.Instance.Data;
+        var mjModel = MjScene.Instance.Model;
+
+        Debug.Log((int)mjtObj_.mjOBJ_DOF);
     }
 
     public string GetObjectName(IntPtr mjModel, int type, int id)
