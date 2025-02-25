@@ -53,7 +53,7 @@ public class RobotData
 
     // // global properties
     public double time;              // simulation time
-    public List<double> energy;         // potential, kinetic energy
+    public double[] energy;         // potential, kinetic energy
 
     // //-------------------- end of info header
 
@@ -64,11 +64,11 @@ public class RobotData
     //-------------------- main inputs and outputs of the computation
 
     // state
-    public List<double> qpos;              // position                                         (nq x 1)
-    public List<double> qvel;              // velocity                                         (nv x 1)
-    public List<double> act;               // actuator activation                              (na x 1)
-    public List<double> qacc_warmstart;    // acceleration used for warmstart                  (nv x 1)
-    public List<double> plugin_state;      // plugin state                                     (npluginstate x 1)
+    public double[] qpos;              // position                                         (nq x 1)
+    public double[] qvel;              // velocity                                         (nv x 1)
+    public double[] act;               // actuator activation                              (na x 1)
+    public double[] qacc_warmstart;    // acceleration used for warmstart                  (nv x 1)
+    public double[] plugin_state;      // plugin state                                     (npluginstate x 1)
 
     // // control
     // mjtNum* ctrl;              // control                                          (nu x 1)
@@ -81,8 +81,8 @@ public class RobotData
     // mjtNum* mocap_quat;        // orientations of mocap bodies                     (nmocap x 4)
 
     // // dynamics
-    // mjtNum* qacc;              // acceleration                                     (nv x 1)
-    // mjtNum* act_dot;           // time-derivative of actuator activation           (na x 1)
+    public double[] qacc;              // acceleration                                     (nv x 1)
+    public double[] act_dot;           // time-derivative of actuator activation           (na x 1)
 
     // // user data
     // mjtNum* userdata;          // user data, not touched by engine                 (nuserdata x 1)
@@ -97,7 +97,7 @@ public class RobotData
     // //-------------------- POSITION dependent
 
     // // computed by mj_fwdPosition/mj_kinematics
-    // mjtNum* xpos;              // Cartesian position of body frame                 (nbody x 3)
+    public double[,] xpos;              // Cartesian position of body frame                 (nbody x 3)
     // mjtNum* xquat;             // Cartesian orientation of body frame              (nbody x 4)
     // mjtNum* xmat;              // Cartesian orientation of body frame              (nbody x 9)
     // mjtNum* xipos;             // Cartesian position of body com                   (nbody x 3)

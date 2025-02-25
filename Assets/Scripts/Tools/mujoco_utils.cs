@@ -258,36 +258,52 @@ public class MujocoAPIProxy
         d.nisland = mjData_->nisland;
 
         d.time = mjData_->time;
-        d.energy = new List<double>();
+        d.energy = new double[2];
         for (int i=0; i < 2; i++) {
-            d.energy.Add(mjData_->energy[i]);
+            d.energy[i] = mjData_->energy[i];
         }
         
-        d.qpos = new List<double>();
+        d.qpos = new double[mjModel_->nq];
         for (int i=0; i < mjModel_->nq; i++) {
-            d.qpos.Add(mjData_->qpos[i]);
+            d.qpos[i] = mjData_->qpos[i];
         }
 
-        d.qvel = new List<double>();
+        d.qvel = new double[mjModel_->nv];
         for (int i=0; i < mjModel_->nv; i++) {
-            d.qvel.Add(mjData_->qvel[i]);
+            d.qvel[i] = mjData_->qvel[i];
         }
 
-        d.act = new List<double>();
+        d.act = new double[mjModel_->na];
         for (int i=0; i < mjModel_->na; i++) {
-            d.act.Add(mjData_->act[i]);
+            d.act[i] = mjData_->act[i];
         }
 
-        d.qacc_warmstart = new List<double>();
+        d.qacc_warmstart = new double[mjModel_->nv];
         for (int i=0; i < mjModel_->nv; i++) {
-            d.qacc_warmstart.Add(mjData_->qacc_warmstart[i]);
+            d.qacc_warmstart[i] = mjData_->qacc_warmstart[i];
         }
 
-        d.plugin_state = new List<double>();
+        d.plugin_state = new double[mjModel_->npluginstate];
         for (int i=0; i < mjModel_->npluginstate; i++) {
-            d.plugin_state.Add(mjData_->plugin_state[i]);
+            d.plugin_state[i] = mjData_->plugin_state[i];
         }
 
+        d.qacc = new double[mjModel_->nv];
+        for (int i=0; i < mjModel_->nv; i++) {
+            d.qacc[i] = mjData_->qacc[i];
+        }
+
+        d.act_dot = new double[mjModel_->na];
+        for (int i=0; i < mjModel_->na; i++) {
+            d.act_dot[i] = mjData_->act_dot[i];
+        }
+
+        d.xpos = new double[mjModel_->nbody, 3];
+        for (int i=0; i < mjModel_->nbody; i++) {
+            for (int j=0; j < 3; j++) {
+                d.xpos[i, j] = mjData_->xpos[i * 3 + j];
+            }
+        }
 
     }
 
