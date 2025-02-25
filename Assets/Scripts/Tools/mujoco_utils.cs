@@ -49,187 +49,33 @@ public class MujocoAPIProxy
 {
     [DllImport("mujoco")]
     private static extern IntPtr mj_id2name(IntPtr m, int type, int id);
-    private static readonly int JointType = 3; // mjtOBJ_JOINT
-    private static readonly int GeomType = 5; // mjtOBJ_GEOM
-    private static readonly int ActuatorType = 19; // mjtOBJ_ACTUATOR
 
-
-    public unsafe List<double> getQpos()
-    {
+    public unsafe RobotMapping GetMapping() {
         var mjModel = MjScene.Instance.Model;
-        var mjData = MjScene.Instance.Data;
-        List<double> qpos = new List<double>();
-        for (int i=0; i < mjModel->nq; i++)
-        {
-            qpos.Add(mjData->qpos[i]);
-        }
-        return qpos;
-    }
+        RobotMapping mapping = new RobotMapping();
+        mapping.joint_name_id_mapping = new Dictionary<string, int>();
+        mapping.actuator_name_id_mapping = new Dictionary<string, int>();
+        mapping.geom_name_id_mapping = new Dictionary<string, int>();
 
-    public unsafe List<double> getQvel()
-    {
-        var mjModel = MjScene.Instance.Model;
-        var mjData = MjScene.Instance.Data;
-        List<double> qvel = new List<double>();
-        for (int i=0; i < mjModel->nv; i++)
-        {
-            qvel.Add(mjData->qvel[i]);
-        }
-        return qvel;
-    }
-
-    public unsafe List<double> getEfcForce() {
-        var mjData = MjScene.Instance.Data;
-        List<double> efc_force = new List<double>();
-        for (int i=0; i < mjData->nefc; i++) {
-            efc_force.Add(mjData->efc_force[i]);
-        }
-        return efc_force;
-    }
-
-    public unsafe ActuatorMapping getActuatorMapping() {
-        var mjModel = MjScene.Instance.Model;
-        var mjData = MjScene.Instance.Data;
-        ActuatorMapping actuator_mapping = new ActuatorMapping();
-        actuator_mapping.actuator_name_id_mapping = new Dictionary<string, int>();
         for (int i=0; i < mjModel->nu; i++) {
-            string name = GetObjectName((IntPtr)mjModel, ActuatorType, i);
-            actuator_mapping.actuator_name_id_mapping[name] = i;
+            string name = GetObjectName((IntPtr)mjModel, (int)mjtObj_.mjOBJ_ACTUATOR, i);
+            mapping.actuator_name_id_mapping[name] = i;
         }
-        return actuator_mapping;
-    }
-
-    public unsafe Dictionary<string, RobotJointData> getJointData()
-    {
-        var mjData = MjScene.Instance.Data;
-        var mjModel = MjScene.Instance.Model;
-        Dictionary<string, RobotJointData> jointStates = new Dictionary<string, RobotJointData>();
-        for (int i=0; i < mjModel->njnt; i++)
-        {
-            RobotJointData jointData = new RobotJointData();
-            string name = GetObjectName((IntPtr)mjModel, JointType, i);
-            if (string.IsNullOrEmpty(name))
-            {
-                Debug.LogWarning($"No name found for joint ID {i}");
-                continue;
-            }
-            jointStates[name] = jointData;
-        }
-
-        return jointStates;
-    }
-
-    public unsafe GeomMapping getGeomMapping() {
-        GeomMapping geomIdNameMapping = new GeomMapping();
-        Dictionary<string, int> nameIdMapping = new Dictionary<string, int>();
-        var mjModel = MjScene.Instance.Model;
 
         for (int i=0; i < mjModel->ngeom; i++) {
-            string name = GetObjectName((IntPtr)mjModel, GeomType, i);
-            nameIdMapping[name] = i;
+            string name = GetObjectName((IntPtr)mjModel, (int)mjtObj_.mjOBJ_GEOM, i);
+            mapping.geom_name_id_mapping[name] = i;
         }
-        // geomIdNameMapping.geom_id_name_mapping = idNameMapping;
-        geomIdNameMapping.geom_name_id_mapping = nameIdMapping;
-        return geomIdNameMapping;
-    }
 
-    // public unsafe string
-    public unsafe RobotJointMapping getJointMapping() {
-        RobotJointMapping jointIdNameMapping = new RobotJointMapping();
-        Dictionary<string, int> nameIdMapping = new Dictionary<string, int>();
-
-        var mjModel = MjScene.Instance.Model;
         for (int i=0; i < mjModel->njnt; i++) {
-            string name = GetObjectName((IntPtr)mjModel, JointType, i);
-            nameIdMapping[name] = i;
+            string name = GetObjectName((IntPtr)mjModel, (int)mjtObj_.mjOBJ_JOINT, i);
+            mapping.joint_name_id_mapping[name] = i;
         }
-        jointIdNameMapping.joint_name_id_mapping = nameIdMapping;
-        jointIdNameMapping.joint_name_id_mapping = nameIdMapping;
-        return jointIdNameMapping;
+
+        return mapping;
     }
 
-    public unsafe List<RobotContact> getContact() {
-        const int coneHessianDim = 36;
-        const int elemDim = 2;
-        const int flexDim = 2;
-        const int frameDim = 9;
-        const int frictionDim = 5;
-        const int geomDim = 2;
-        const int posDim = 3;
-        const int vertDim = 2;
-
-        var mjData = MjScene.Instance.Data;
-        List<RobotContact> contact_list = new List<RobotContact>();
-        for (int i=0; i < mjData->ncon; i++) {
-            RobotContact robot_contact = new RobotContact();
-
-            robot_contact.H = new List<double>();
-            robot_contact.elem = new List<int>();
-            robot_contact.flex = new List<int>();
-            robot_contact.frame = new List<double>();
-            robot_contact.friction = new List<double>();
-            robot_contact.geom = new List<int>();
-            robot_contact.pos = new List<double>();
-            robot_contact.vert = new List<int>();
-
-            var contact_data = mjData->contact[i];
-
-            for (int j=0; j < coneHessianDim; j++) {
-                robot_contact.H.Add(contact_data.H[j]);
-            }
-
-            robot_contact.dim = contact_data.dim;
-            
-            robot_contact.distance = contact_data.dist;
-
-            robot_contact.efc_address = contact_data.efc_address;
-
-            for (int j=0; j < elemDim; j++) {
-                robot_contact.elem.Add(contact_data.elem[j]);
-            }
-
-            robot_contact.exclude = contact_data.exclude;
-
-            for (int j=0; j < flexDim; j++) {
-                robot_contact.flex.Add(contact_data.flex[j]);
-            }
-
-            for (int j=0; j < frameDim; j++) {
-                robot_contact.frame.Add(contact_data.frame[j]);
-            }
-
-            for (int j=0; j < frictionDim; j++) {
-                robot_contact.friction.Add(contact_data.friction[j]);
-            }
-
-            for (int j=0; j < geomDim; j++) {
-                robot_contact.geom.Add(contact_data.geom[j]);
-            }
-
-            robot_contact.geom1 = contact_data.geom1;
-
-            robot_contact.geom2 = contact_data.geom2;
-
-            robot_contact.includemargin = contact_data.includemargin;
-
-            robot_contact.mu = contact_data.mu;
-
-            for (int j=0; j < posDim; j++) {
-                robot_contact.pos.Add(contact_data.pos[j]);
-            }
-
-            for (int j=0; j < vertDim; j++) {
-                robot_contact.vert.Add(contact_data.vert[j]);
-            }
-
-            contact_list.Add(robot_contact);
-
-            
-        }
-        return contact_list;
-    }
-
-    public unsafe void GetData() {
+    public unsafe RobotData GetData() {
         var mjData_ = MjScene.Instance.Data;
         var mjModel_ = MjScene.Instance.Model;
         RobotData d = new RobotData();
@@ -305,6 +151,138 @@ public class MujocoAPIProxy
             }
         }
 
+        d.xquat = new double[mjModel_->nbody, 4];
+        for (int i=0; i < mjModel_->nbody; i++) {
+            for (int j=0; j < 4; j++) {
+                d.xquat[i, j] = mjData_->xquat[i * 4 + j];
+            }
+        }
+
+        d.xmat = new double[mjModel_->nbody, 9];
+        for (int i=0; i < mjModel_->nbody; i++) {
+            for (int j=0; j < 9; j++) {
+                d.xmat[i, j] = mjData_->xmat[i * 9 + j];
+            }
+        }
+
+        d.ximat = new double[mjModel_->nbody, 9];
+        for (int i=0; i < mjModel_->nbody; i++) {
+            for (int j=0; j < 9; j++) {
+                d.ximat[i, j] = mjData_->ximat[i * 9 + j];
+            }
+        }
+
+        d.xanchor = new double[mjModel_->njnt, 3];
+        for (int i=0; i < mjModel_->njnt; i++) {
+            for (int j=0; j < 3; j++) {
+                d.xanchor[i, j] = mjData_->xanchor[i * 3 + j];
+            }
+        }
+
+        d.xaxis = new double[mjModel_->njnt, 3];
+        for (int i=0; i < mjModel_->njnt; i++) {
+            for (int j=0; j < 3; j++) {
+                d.xaxis[i, j] = mjData_->xaxis[i * 3 + j];
+            }
+        }
+
+        d.geom_xpos = new double[mjModel_->ngeom, 3];
+        for (int i=0; i < mjModel_->ngeom; i++) {
+            for (int j=0; j < 3; j++) {
+                d.geom_xpos[i, j] = mjData_->geom_xpos[i * 3 + j];
+            }
+        }
+
+        d.geom_xmat = new double[mjModel_->ngeom, 9];
+        for (int i=0; i < mjModel_->ngeom; i++) {
+            for (int j=0; j < 9; j++) {
+                d.geom_xmat[i, j] = mjData_->geom_xmat[i * 9 + j];
+            }
+        }
+
+        d.site_xpos = new double[mjModel_->nsite, 3];
+        for (int i=0; i < mjModel_->nsite; i++) {
+            for (int j=0; j < 3; j++) {
+                d.site_xpos[i, j] = mjData_->site_xpos[i * 3 + j];
+            }
+        }
+
+        d.site_xmat = new double[mjModel_->nsite, 9];
+        for (int i=0; i < mjModel_->nsite; i++) {
+            for (int j=0; j < 9; j++) {
+                d.site_xmat[i, j] = mjData_->site_xmat[i * 9 + j];
+            }
+        }
+
+        d.cam_xpos = new double[mjModel_->ncam, 3];
+        for (int i=0; i < mjModel_->ncam; i++) {
+            for (int j=0; j < 3; j++) {
+                d.cam_xpos[i, j] = mjData_->cam_xpos[i * 3 + j];
+            }
+        }
+
+        d.cam_xmat = new double[mjModel_->ncam, 9];
+        for (int i=0; i < mjModel_->ncam; i++) {
+            for (int j=0; j < 9; j++) {
+                d.cam_xmat[i, j] = mjData_->cam_xmat[i * 9 + j];
+            }
+        }
+
+        d.light_xpos = new double[mjModel_->nlight, 3];
+        for (int i=0; i < mjModel_->nlight; i++) {
+            for (int j=0; j < 3; j++) {
+                d.light_xpos[i, j] = mjData_->light_xpos[i * 3 + j];
+            }
+        }
+
+        d.light_xdir = new double[mjModel_->nlight, 3];
+        for (int i=0; i < mjModel_->nlight; i++) {
+            for (int j=0; j < 3; j++) {
+                d.light_xdir[i, j] = mjData_->light_xdir[i * 3 + j];
+            }
+        }
+
+        d.contact = new mjContact_[d.ncon];
+        for (int i=0; i < d.ncon; i++) {
+            d.contact[i] = new mjContact_();
+            d.contact[i].dist = mjData_->contact[i].dist;
+            d.contact[i].pos = new double[3];
+            for (int j=0; j < 3; j++) {
+                d.contact[i].pos[j] = mjData_->contact[i].pos[j];
+            }
+            d.contact[i].frame = new double[9];
+            for (int j=0; j < 9; j++) {
+                d.contact[i].frame[j] = mjData_->contact[i].frame[j];
+            }
+
+            d.contact[i].dim = mjData_->contact[i].dim;
+            d.contact[i].geom = new int[2];
+            for (int j=0; j < 2; j++) {
+                d.contact[i].geom[j] = mjData_->contact[i].geom[j];
+            }
+
+            d.contact[i].flex = new int[2];
+            for (int j=0; j < 2; j++) {
+                d.contact[i].flex[j] = mjData_->contact[i].flex[j];
+            }
+
+            d.contact[i].elem = new int[2];
+            for (int j=0; j < 2; j++) {
+                d.contact[i].elem[j] = mjData_->contact[i].elem[j];
+            }
+
+            d.contact[i].vert = new int[2];
+            for (int j=0; j < 2; j++) {
+                d.contact[i].vert[j] = mjData_->contact[i].vert[j];
+            }
+
+        }
+
+        d.efc_force = new double[mjData_->nefc];
+        for (int i=0; i < mjData_->nefc; i++) {
+            d.efc_force[i] = mjData_->efc_force[i];
+        }
+        return d;
     }
 
     public string GetObjectName(IntPtr mjModel, int type, int id)

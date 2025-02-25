@@ -8,6 +8,14 @@ using Mujoco;
 /// </summary>
 /// 
 
+[Serializable]
+public class RobotFrame
+{
+    public byte[] egocentric_view; // unity
+    public string robot_state;
+    public string robot_mapping;
+}
+
 // https://mujoco.readthedocs.io/en/stable/APIreference/APItypes.html#mjdata
 [Serializable]
 public class RobotData
@@ -98,20 +106,20 @@ public class RobotData
 
     // // computed by mj_fwdPosition/mj_kinematics
     public double[,] xpos;              // Cartesian position of body frame                 (nbody x 3)
-    // mjtNum* xquat;             // Cartesian orientation of body frame              (nbody x 4)
-    // mjtNum* xmat;              // Cartesian orientation of body frame              (nbody x 9)
-    // mjtNum* xipos;             // Cartesian position of body com                   (nbody x 3)
-    // mjtNum* ximat;             // Cartesian orientation of body inertia            (nbody x 9)
-    // mjtNum* xanchor;           // Cartesian position of joint anchor               (njnt x 3)
-    // mjtNum* xaxis;             // Cartesian joint axis                             (njnt x 3)
-    // mjtNum* geom_xpos;         // Cartesian geom position                          (ngeom x 3)
-    // mjtNum* geom_xmat;         // Cartesian geom orientation                       (ngeom x 9)
-    // mjtNum* site_xpos;         // Cartesian site position                          (nsite x 3)
-    // mjtNum* site_xmat;         // Cartesian site orientation                       (nsite x 9)
-    // mjtNum* cam_xpos;          // Cartesian camera position                        (ncam x 3)
-    // mjtNum* cam_xmat;          // Cartesian camera orientation                     (ncam x 9)
-    // mjtNum* light_xpos;        // Cartesian light position                         (nlight x 3)
-    // mjtNum* light_xdir;        // Cartesian light direction                        (nlight x 3)
+    public double[,] xquat;             // Cartesian orientation of body frame              (nbody x 4)
+    public double[,] xmat;              // Cartesian orientation of body frame              (nbody x 9)
+    public double[,] xipos;             // Cartesian position of body com                   (nbody x 3)
+    public double[,] ximat;             // Cartesian orientation of body inertia            (nbody x 9)
+    public double[,] xanchor;           // Cartesian position of joint anchor               (njnt x 3)
+    public double[,] xaxis;             // Cartesian joint axis                             (njnt x 3)
+    public double[,] geom_xpos;         // Cartesian geom position                          (ngeom x 3)
+    public double[,] geom_xmat;         // Cartesian geom orientation                       (ngeom x 9)
+    public double[,] site_xpos;         // Cartesian site position                          (nsite x 3)
+    public double[,] site_xmat;         // Cartesian site orientation                       (nsite x 9)
+    public double[,] cam_xpos;          // Cartesian camera position                        (ncam x 3)
+    public double[,] cam_xmat;          // Cartesian camera orientation                     (ncam x 9)
+    public double[,] light_xpos;        // Cartesian light position                         (nlight x 3)
+    public double[,] light_xdir;        // Cartesian light direction                        (nlight x 3)
 
     // // computed by mj_fwdPosition/mj_comPos
     // mjtNum* subtree_com;       // center of mass of each subtree                   (nbody x 3)
@@ -232,7 +240,7 @@ public class RobotData
     // //-------------------- arena-allocated: POSITION dependent
 
     // // computed by mj_collision
-    // mjContact* contact;        // array of all detected contacts                   (ncon x 1)
+    public mjContact_[] contact;        // array of all detected contacts                   (ncon x 1)
 
     // // computed by mj_makeConstraint
     // public int* efc_type;          // constraint type (mjtConstraint)                  (nefc x 1)
@@ -283,85 +291,51 @@ public class RobotData
 
     // // computed by mj_fwdConstraint/mj_inverse
     // mjtNum* efc_b;             // linear cost term: J*qacc_smooth - aref           (nefc x 1)
-    // mjtNum* efc_force;         // constraint force in constraint space             (nefc x 1)
+    public double[] efc_force;         // constraint force in constraint space             (nefc x 1)
     // public int* efc_state;         // constraint state (mjtConstraintState)            (nefc x 1)
 
     // // thread pool pointer
     // uintptr_t threadpool;
 }
 
-[Serializable]
-public class RobotFrame
-{
-    public byte[] egocentric_view;
-    public string robot_state;
-}
+public class mjContact_
+{                // result of collision detection functions
+                 // contact parameters set by near-phase collision function
+    public double dist;                    // distance between nearest points; neg: penetration
+    public double[] pos;                  // position of contact point: midpoint between geoms
+    public double[] frame;                // normal is in [0-2], points from geom[0] to geom[1]
+
+    //   // contact parameters set by mj_collideGeoms
+    //   mjtNum  includemargin;           // include if dist<includemargin=margin-gap
+    //   mjtNum  friction[5];             // tangent1, 2, spin, roll1, 2
+    //   mjtNum  solref[mjNREF];          // constraint solver reference, normal direction
+    //   mjtNum  solreffriction[mjNREF];  // constraint solver reference, friction directions
+    //   mjtNum  solimp[mjNIMP];          // constraint solver impedance
+
+    //   // internal storage used by solver
+    //   mjtNum  mu;                      // friction of regularized cone, set by mj_makeConstraint
+    //   mjtNum  H[36];                   // cone Hessian, set by mj_constraintUpdate
+
+    //   // contact descriptors set by mj_collideXXX
+    public int dim;                     // contact space dimensionality: 1, 3, 4 or 6
+    //   public int     geom1;                   // id of geom 1; deprecated, use geom[0]
+    //   public int     geom2;                   // id of geom 2; deprecated, use geom[1]
+    public int[] geom;                 // geom ids; -1 for flex
+    public int[] flex;                 // flex ids; -1 for geom
+    public int[] elem;                 // element ids; -1 for geom or flex vertex
+    public int[] vert;                 // vertex ids;  -1 for geom or flex element
+
+    //   // flag set by mj_setContact or mj_instantiateContact
+    //   int     exclude;                 // 0: include, 1: in gap, 2: fused, 3: no dofs
+
+    //   // address computed by mj_instantiateContact
+    //   int     efc_address;             // address in efc; -1: not included
+};
 
 [Serializable]
-public class RobotState
-{
-    public List<double> qpos;
-    public List<double> qvel;
-    public List<double> efc_force;
-    public Dictionary<string, RobotJointData> joint_data;
-    public GeomMapping geom_mapping;
-    public RobotJointMapping joint_mapping;
-    public List<RobotContact> contact_list;
-    public ActuatorMapping actuator_mapping;
-}
-
-public class ActuatorMapping
-{
-    public Dictionary<string, int> actuator_name_id_mapping;
-}
-
-public class RobotContact
-{
-    public List<double> H;
-    public int dim;
-    public double distance;
-    public int efc_address;
-    public List<int> elem;
-    public int exclude;
-    public List<int> flex;
-    public List<double> frame;
-    public List<double> friction;
-    public List<int> geom;
-    public int geom1;
-    public int geom2;
-    public double includemargin;
-    public double mu;
-    public List<double> pos;
-
-    public List<int> vert;
-
-}
-
-public class GeomMapping
-{
-    public Dictionary<string, int> geom_name_id_mapping;
-}
-
-public class RobotJointMapping
+public class RobotMapping
 {
     public Dictionary<string, int> joint_name_id_mapping;
+    public Dictionary<string, int> actuator_name_id_mapping;
+    public Dictionary<string, int> geom_name_id_mapping;
 }
-
-
-public class RobotJointData
-{
-    public int id;
-    public string name;
-    public double qpos;
-    public double qvel;
-    public double effort;
-    public int qpos_adr;
-    public int qvel_adr;
-    public int effort_adr;
-    public double xpos;
-    public double axis;
-    public double offset;
-    public string parent_geoms;
-    public string child_geoms;
-}
-
