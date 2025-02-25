@@ -329,7 +329,7 @@ public class mjContact_
     //   int     exclude;                 // 0: include, 1: in gap, 2: fused, 3: no dofs
 
     //   // address computed by mj_instantiateContact
-    //   int     efc_address;             // address in efc; -1: not included
+    public int efc_address;             // address in efc; -1: not included
 };
 
 [Serializable]

@@ -276,6 +276,8 @@ public class MujocoAPIProxy
                 d.contact[i].vert[j] = mjData_->contact[i].vert[j];
             }
 
+            d.contact[i].efc_address = mjData_->contact[i].efc_address;
+
         }
 
         d.efc_force = new double[mjData_->nefc];
