@@ -230,10 +230,65 @@ public class MujocoAPIProxy
     }
 
     public unsafe void GetData() {
-        var mjData = MjScene.Instance.Data;
-        var mjModel = MjScene.Instance.Model;
+        var mjData_ = MjScene.Instance.Data;
+        var mjModel_ = MjScene.Instance.Model;
+        RobotData d = new RobotData();
 
-        Debug.Log((int)mjtObj_.mjOBJ_DOF);
+        d.narena = (int)mjData_->narena;
+        d.nbuffer = (int)mjData_->nbuffer;
+        d.nplugin = mjData_->nplugin;
+
+        d.pstack = (int)mjData_->pstack;
+        d.pbase = (int)mjData_->pbase;
+        d.parena = (int)mjData_->parena;
+
+        d.maxuse_stack = (int)mjData_->maxuse_stack;
+        // d.maxuse_threadstack = (int)mjData_->maxuse_threadstack;
+        d.maxuse_arena = (int)mjData_->maxuse_arena;
+        d.maxuse_con = mjData_->maxuse_con;
+        d.maxuse_efc = mjData_->maxuse_efc;
+
+        d.ncon = mjData_->ncon;
+        d.ne = mjData_->ne;
+        d.nf = mjData_->nf;
+        d.nl = mjData_->nl;
+        d.nefc = mjData_->nefc;
+        d.nJ = mjData_->nJ;
+        // d.nA = mjData_->nA;
+        d.nisland = mjData_->nisland;
+
+        d.time = mjData_->time;
+        d.energy = new List<double>();
+        for (int i=0; i < 2; i++) {
+            d.energy.Add(mjData_->energy[i]);
+        }
+        
+        d.qpos = new List<double>();
+        for (int i=0; i < mjModel_->nq; i++) {
+            d.qpos.Add(mjData_->qpos[i]);
+        }
+
+        d.qvel = new List<double>();
+        for (int i=0; i < mjModel_->nv; i++) {
+            d.qvel.Add(mjData_->qvel[i]);
+        }
+
+        d.act = new List<double>();
+        for (int i=0; i < mjModel_->na; i++) {
+            d.act.Add(mjData_->act[i]);
+        }
+
+        d.qacc_warmstart = new List<double>();
+        for (int i=0; i < mjModel_->nv; i++) {
+            d.qacc_warmstart.Add(mjData_->qacc_warmstart[i]);
+        }
+
+        d.plugin_state = new List<double>();
+        for (int i=0; i < mjModel_->npluginstate; i++) {
+            d.plugin_state.Add(mjData_->plugin_state[i]);
+        }
+
+
     }
 
     public string GetObjectName(IntPtr mjModel, int type, int id)
