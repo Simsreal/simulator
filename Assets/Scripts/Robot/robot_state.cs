@@ -88,7 +88,7 @@ public class RobotData
     // mjtNum* mocap_pos;         // positions of mocap bodies                        (nmocap x 3)
     // mjtNum* mocap_quat;        // orientations of mocap bodies                     (nmocap x 4)
 
-    // // dynamics
+    // dynamics
     public double[] qacc;              // acceleration                                     (nv x 1)
     public double[] act_dot;           // time-derivative of actuator activation           (na x 1)
 
@@ -102,9 +102,9 @@ public class RobotData
     // public int* plugin;         // copy of m->plugin, required for deletion         (nplugin x 1)
     // uintptr_t* plugin_data;    // pointer to plugin-managed data structure         (nplugin x 1)
 
-    // //-------------------- POSITION dependent
+    //-------------------- POSITION dependent
 
-    // // computed by mj_fwdPosition/mj_kinematics
+    // computed by mj_fwdPosition/mj_kinematics
     public double[,] xpos;              // Cartesian position of body frame                 (nbody x 3)
     public double[,] xquat;             // Cartesian orientation of body frame              (nbody x 4)
     public double[,] xmat;              // Cartesian orientation of body frame              (nbody x 9)
@@ -215,70 +215,70 @@ public class RobotData
     // // computed by mj_implicit/mju_factorLUSparse
     // mjtNum* qLU;               // sparse LU of (qM - dt*qDeriv)                    (nD x 1)
 
-    // //-------------------- POSITION, VELOCITY, CONTROL/ACCELERATION dependent
+    //-------------------- POSITION, VELOCITY, CONTROL/ACCELERATION dependent
 
-    // // computed by mj_fwdActuation
-    // mjtNum* actuator_force;    // actuator force in actuation space                (nu x 1)
-    // mjtNum* qfrc_actuator;     // actuator force                                   (nv x 1)
+    // computed by mj_fwdActuation
+    public double[] actuator_force;    // actuator force in actuation space                (nu x 1)
+    public double[] qfrc_actuator;     // actuator force                                   (nv x 1)
 
-    // // computed by mj_fwdAcceleration
-    // mjtNum* qfrc_smooth;       // net unconstrained force                          (nv x 1)
-    // mjtNum* qacc_smooth;       // unconstrained acceleration                       (nv x 1)
+    // computed by mj_fwdAcceleration
+    public double[] qfrc_smooth;       // net unconstrained force                          (nv x 1)
+    public double[] qacc_smooth;       // unconstrained acceleration                       (nv x 1)
 
-    // // computed by mj_fwdConstraint/mj_inverse
-    // mjtNum* qfrc_constraint;   // constraint force                                 (nv x 1)
+    // computed by mj_fwdConstraint/mj_inverse
+    public double[] qfrc_constraint;   // constraint force                                 (nv x 1)
 
-    // // computed by mj_inverse
-    // mjtNum* qfrc_inverse;      // net external force; should equal:                (nv x 1)
-    //                            // qfrc_applied + J'*xfrc_applied + qfrc_actuator
+    // computed by mj_inverse
+    public double[] qfrc_inverse;      // net external force; should equal:                (nv x 1)
+                                       // qfrc_applied + J'*xfrc_applied + qfrc_actuator
 
-    // // computed by mj_sensorAcc/mj_rnePostConstraint if needed; rotation:translation format
-    // mjtNum* cacc;              // com-based acceleration                           (nbody x 6)
-    // mjtNum* cfrc_int;          // com-based interaction force with parent          (nbody x 6)
-    // mjtNum* cfrc_ext;          // com-based external force on body                 (nbody x 6)
+    // computed by mj_sensorAcc/mj_rnePostConstraint if needed; rotation:translation format
+    public double[,] cacc;              // com-based acceleration                           (nbody x 6)
+    public double[,] cfrc_int;          // com-based interaction force with parent          (nbody x 6)
+    public double[,] cfrc_ext;          // com-based external force on body                 (nbody x 6)
 
-    // //-------------------- arena-allocated: POSITION dependent
+    //-------------------- arena-allocated: POSITION dependent
 
-    // // computed by mj_collision
+    // computed by mj_collision
     public mjContact_[] contact;        // array of all detected contacts                   (ncon x 1)
 
-    // // computed by mj_makeConstraint
-    // public int* efc_type;          // constraint type (mjtConstraint)                  (nefc x 1)
-    // public int* efc_id;            // id of object of specified type                   (nefc x 1)
-    // public int* efc_J_rownnz;      // number of non-zeros in constraint Jacobian row   (nefc x 1)
-    // public int* efc_J_rowadr;      // row start address in colind array                (nefc x 1)
-    // public int* efc_J_rowsuper;    // number of subsequent rows in supernode           (nefc x 1)
-    // public int* efc_J_colind;      // column indices in constraint Jacobian            (nJ x 1)
-    // public int* efc_JT_rownnz;     // number of non-zeros in constraint Jacobian row T (nv x 1)
-    // public int* efc_JT_rowadr;     // row start address in colind array              T (nv x 1)
-    // public int* efc_JT_rowsuper;   // number of subsequent rows in supernode         T (nv x 1)
-    // public int* efc_JT_colind;     // column indices in constraint Jacobian          T (nJ x 1)
-    // mjtNum* efc_J;             // constraint Jacobian                              (nJ x 1)
-    // mjtNum* efc_JT;            // constraint Jacobian transposed                   (nJ x 1)
-    // mjtNum* efc_pos;           // constraint position (equality, contact)          (nefc x 1)
-    // mjtNum* efc_margin;        // inclusion margin (contact)                       (nefc x 1)
-    // mjtNum* efc_frictionloss;  // frictionloss (friction)                          (nefc x 1)
-    // mjtNum* efc_diagApprox;    // approximation to diagonal of A                   (nefc x 1)
-    // mjtNum* efc_KBIP;          // stiffness, damping, impedance, imp'              (nefc x 4)
-    // mjtNum* efc_D;             // constraint mass                                  (nefc x 1)
-    // mjtNum* efc_R;             // inverse constraint mass                          (nefc x 1)
-    // public int* tendon_efcadr;     // first efc address involving tendon; -1: none     (ntendon x 1)
+    // computed by mj_makeConstraint
+    //public int[] efc_type;          // constraint type (mjtConstraint)                  (nefc x 1)
+    //public int[] efc_id;            // id of object of specified type                   (nefc x 1)
+    //public int[] efc_J_rownnz;      // number of non-zeros in constraint Jacobian row   (nefc x 1)
+    //public int[] efc_J_rowadr;      // row start address in colind array                (nefc x 1)
+    //public int[] efc_J_rowsuper;    // number of subsequent rows in supernode           (nefc x 1)
+    //public int[] efc_J_colind;      // column indices in constraint Jacobian            (nJ x 1)
+    //public int[] efc_JT_rownnz;     // number of non-zeros in constraint Jacobian row T (nv x 1)
+    //public int[] efc_JT_rowadr;     // row start address in colind array              T (nv x 1)
+    //public int[] efc_JT_rowsuper;   // number of subsequent rows in supernode         T (nv x 1)
+    //public int[] efc_JT_colind;     // column indices in constraint Jacobian          T (nJ x 1)
+    //public double[] efc_J;             // constraint Jacobian                              (nJ x 1)
+    //public double[] efc_JT;            // constraint Jacobian transposed                   (nJ x 1)
+    //public double[] efc_pos;           // constraint position (equality, contact)          (nefc x 1)
+    //public double[] efc_margin;        // inclusion margin (contact)                       (nefc x 1)
+    //public double[] efc_frictionloss;  // frictionloss (friction)                          (nefc x 1)
+    //public double[] efc_diagApprox;    // approximation to diagonal of A                   (nefc x 1)
+    //public double[,] efc_KBIP;          // stiffness, damping, impedance, imp'              (nefc x 4)
+    //public double[] efc_D;             // constraint mass                                  (nefc x 1)
+    //public double[] efc_R;             // inverse constraint mass                          (nefc x 1)
+    //public int[] tendon_efcadr;     // first efc address involving tendon; -1: none     (ntendon x 1)
 
-    // // computed by mj_island
-    // public int* dof_island;        // island id of this dof; -1: none                  (nv x 1)
-    // public int* island_dofnum;     // number of dofs in island                         (nisland x 1)
-    // public int* island_dofadr;     // start address in island_dofind                   (nisland x 1)
-    // public int* island_dofind;     // island dof indices; -1: none                     (nv x 1)
-    // public int* dof_islandind;     // dof island indices; -1: none                     (nv x 1)
-    // public int* efc_island;        // island id of this constraint                     (nefc x 1)
-    // public int* island_efcnum;     // number of constraints in island                  (nisland x 1)
-    // public int* island_efcadr;     // start address in island_efcind                   (nisland x 1)
-    // public int* island_efcind;     // island constraint indices                        (nefc x 1)
+    //// computed by mj_island
+    //public int[] dof_island;        // island id of this dof; -1: none                  (nv x 1)
+    //public int[] island_dofnum;     // number of dofs in island                         (nisland x 1)
+    //public int[] island_dofadr;     // start address in island_dofind                   (nisland x 1)
+    //public int[] island_dofind;     // island dof indices; -1: none                     (nv x 1)
+    //public int[] dof_islandind;     // dof island indices; -1: none                     (nv x 1)
+    //public int[] efc_island;        // island id of this constraint                     (nefc x 1)
+    //public int[] island_efcnum;     // number of constraints in island                  (nisland x 1)
+    //public int[] island_efcadr;     // start address in island_efcind                   (nisland x 1)
+    //public int[] island_efcind;     // island constraint indices                        (nefc x 1)
 
-    // // computed by mj_projectConstraint (PGS solver)
-    // public int* efc_AR_rownnz;     // number of non-zeros in AR                        (nefc x 1)
-    // public int* efc_AR_rowadr;     // row start address in colind array                (nefc x 1)
-    // public int* efc_AR_colind;     // column indices in sparse AR                      (nA x 1)
+    //// computed by mj_projectConstraint (PGS solver)
+    //public int[] efc_AR_rownnz;     // number of non-zeros in AR                        (nefc x 1)
+    //public int[] efc_AR_rowadr;     // row start address in colind array                (nefc x 1)
+    // public int* efc_AR_colind;     // column indices in sparse AR                      (nA x 1) // nA not found.
     // mjtNum* efc_AR;            // J*inv(M)*J' + R                                  (nA x 1)
 
     // //-------------------- arena-allocated: POSITION, VELOCITY dependent
