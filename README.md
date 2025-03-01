@@ -26,6 +26,9 @@ Use this [Unity Hub Installer](https://drive.google.com/drive/folders/18VKY69ofg
 #### Linux
 Install Unity Hub by following this [guide](https://docs.unity3d.com/hub/manual/InstallHub.html).
 
+#### MacOS
+Download and run the Unity Hub installer app for MacOS from [here](https://unity.com/download).
+
 ### Clone the repository
 First, clone the repository and initialize the submodule (This assumes you already have `git` and `ssh` setup).
 ```bash
@@ -44,12 +47,12 @@ In Unity Hub, go to `Projects`. Click `Add -> Add project from disk.`, select th
 <!-- 
 > **Note:** At this moment, entering the safe mode is necessary for the first time to make sure Mujoco and NuGetForUnity are properly set up and working.
 
-
 In the safe mode, follow the instructions below to setup the Unity Plugins.
 
 ### Unity Plugins
 
 #### Mujoco
+
 1. In Unity editor, go to `Window -> Package Manager`
 2. Click `+` button and select `Install package from disk`
 3. Select the path as `mujoco/unity/package.json`.
@@ -61,6 +64,14 @@ wget https://github.com/google-deepmind/mujoco/releases/download/3.2.7/mujoco-3.
 mkdir -p ~/.mujoco
 tar -xvzf mujoco-3.2.7-linux-x86_64.tar.gz -C ~/.mujoco
 ```
+
+MacOS
+You will get an error about missing `libmujoco.3.3.0.dylib` library after opening `libmujoco.3.3.0.dylib` project. Follow these steps to install the library.
+Close `simulator` project.
+Download and run [MuJoCo installer](https://github.com/google-deepmind/mujoco/releases) for MacOS.
+Install MuJoCo to `Application` folder.
+Run MuJoCo once to register the library as a trusted binary.
+Open `simulator` again. The error should have gone.
 
 #### NuGetForUnity
 1. In Unity editor, go to `Window -> Package Manager`
