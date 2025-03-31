@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using NetMQ;
 using NetMQ.Sockets;
 using Newtonsoft.Json;
 using UnityEngine;
-using Mujoco;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class ZmqCommunicator : IDisposable
 {
@@ -11,6 +13,8 @@ public class ZmqCommunicator : IDisposable
     private SubscriberSocket subscriber;
     private NetMQPoller poller;
     private volatile bool isRunning = false;
+
+    public event Action<Cmd> OnCmdReceived;
 
     public ZmqCommunicator(
         string pubAddress = "tcp://0.0.0.0:5556",
@@ -53,7 +57,7 @@ public class ZmqCommunicator : IDisposable
     }
 
     // Called by NetMQPoller every time the subscriber has a message.
-    private unsafe void OnSubscriberMessageReceived(object sender, NetMQSocketEventArgs e)
+    private void OnSubscriberMessageReceived(object sender, NetMQSocketEventArgs e)
     {
         if (!isRunning)
         {
@@ -65,14 +69,9 @@ public class ZmqCommunicator : IDisposable
             var message = e.Socket.ReceiveFrameString();
 
             // Deserialize the JSON string into the Cmds class
-            Cmds cmds = JsonConvert.DeserializeObject<Cmds>(message);
+            Cmd cmd = JsonConvert.DeserializeObject<Cmd>(message);
 
-            var mjData = MjScene.Instance.Data;
-            var mjModel = MjScene.Instance.Model;
-
-            for (int i=0; i < mjModel->nu; i++) {
-                mjData->ctrl[i] = cmds.torques[i];
-            }   
+            OnCmdReceived.Invoke(cmd);
         }
         catch (Exception ex)
         {
@@ -80,8 +79,7 @@ public class ZmqCommunicator : IDisposable
         }
     }
 
-    // Example of sending string messages:
-    public void SendFrame(RobotFrame frame)
+    public void SendFrame(object frame)
     {
         if (!isRunning)
         {
