@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class HitPoints : MonoBehaviour
@@ -32,10 +33,15 @@ public class HitPoints : MonoBehaviour
     {
         currentHitPoints -= damage;
 
+        HitPointsChangedEvent(this);
+
         if (currentHitPoints <= 0)
         {
             currentHitPoints = 0;
-            // TODO: trigger events
+            DeadEvent(this);
         }
     }
+
+    public event Action<HitPoints> HitPointsChangedEvent;
+    public event Action<HitPoints> DeadEvent;
 }

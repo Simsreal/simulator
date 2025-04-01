@@ -28,7 +28,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
         if (canAttack && collision.gameObject.CompareTag("Player"))
         {

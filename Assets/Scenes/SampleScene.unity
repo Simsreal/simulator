@@ -1003,7 +1003,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDamage: 10
-  knockbackForce: 60
+  knockbackForce: 500
   attackCooldown: 1
   moveSpeed: 10
 --- !u!1 &832575517
