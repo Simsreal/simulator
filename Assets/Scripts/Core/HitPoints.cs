@@ -33,12 +33,12 @@ public class HitPoints : MonoBehaviour
     {
         currentHitPoints -= damage;
 
-        HitPointsChangedEvent(this);
+        HitPointsChangedEvent?.Invoke(this);
 
         if (currentHitPoints <= 0)
         {
             currentHitPoints = 0;
-            DeadEvent(this);
+            DeadEvent?.Invoke(this);
         }
     }
 

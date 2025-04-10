@@ -151,7 +151,7 @@ public class AgentController : MonoBehaviour
                         Type = 1
                     });
                 }
-                else if (hit.collider.CompareTag("Dangerous"))
+                else if (hit.collider.CompareTag("Enemy"))
                 {
                     s.LineOfSight.Add(new LineOfSight
                     {
