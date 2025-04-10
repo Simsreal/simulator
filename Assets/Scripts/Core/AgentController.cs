@@ -11,15 +11,6 @@ public class AgentController : MonoBehaviour
     private ZmqCommunicator zmqCommunicator;
     private Queue<Cmd> commandQueue;
     private Rigidbody controlledObject;
-    private Transform transform;
-
-    public Camera cameraToCapture;
-    public RenderTexture renderTexture;
-    public string cameraName = "egocentric"; // Expose cameraName as a public parameter
-
-    // Add public fields for resolution
-    public int captureWidth = 640;  // Default width
-    public int captureHeight = 480; // Default height
 
     //public float maxSpeed = 1.0f;
     public float acceleration = 1.0f;
@@ -63,26 +54,6 @@ public class AgentController : MonoBehaviour
         }
 
         controlledObject = GetComponent<Rigidbody>();
-        transform = GetComponent<Transform>();
-
-        if (cameraToCapture == null)
-        {
-            // Use the cameraName parameter to find the camera
-            cameraToCapture = GameObject.Find(cameraName)?.GetComponent<Camera>();
-            if (cameraToCapture == null)
-            {
-                Debug.LogError($"Camera named '{cameraName}' not found!");
-                return;
-            }
-        }
-
-        if (renderTexture == null)
-        {
-            // Use the specified captureWidth and captureHeight
-            renderTexture = new RenderTexture(captureWidth, captureHeight, 24);
-        }
-
-        cameraToCapture.targetTexture = renderTexture;
 
         commandQueue = new Queue<Cmd>();
 
@@ -142,45 +113,62 @@ public class AgentController : MonoBehaviour
         );
     }
 
+    private class LineOfSight
+    {
+        public float Distance { get; set; }
+        public int Type { get; set; }
+    }
+
     private class Status
     {
         //public float X {  get; set; }
         //public float Y { get; set; }
         //public float Z { get; set; }
         //public float Orientation { get; set; }
-        public byte[] Frame { get; set; }
+        //public byte[] Frame { get; set; }
+
+        public List<LineOfSight> LineOfSight { get; } = new List<LineOfSight>();
+
         public int HitPoint { get; set; }
     }
 
     void Update()
     {
         Status s = new Status();
-        s.Frame = CaptureViewBytes() ?? new byte[0];
         s.HitPoint = (int)GetComponent<HitPoints>().HitPoint;
         zmqCommunicator.SendFrame( s );
-    }
 
-    public Texture2D CaptureView()
-    {
-        RenderTexture currentRT = RenderTexture.active;
-        RenderTexture.active = renderTexture;
-
-        cameraToCapture.Render();
-
-        Texture2D image = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
-        image.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
-        image.Apply();
-
-        RenderTexture.active = currentRT;
-        return image;
-    }
-
-    public byte[] CaptureViewBytes()
-    {
-        Texture2D image = CaptureView();
-        byte[] bytes = image.EncodeToJPG();
-        UnityEngine.Object.Destroy(image);
-        return bytes;
+        IList<RaycastHit> hits = GetComponent<RayCaster>().hits;
+        foreach (var hit in hits)
+        {
+            if (hit.collider)
+            {
+                if (hit.collider.CompareTag("Obstacle"))
+                {
+                    s.LineOfSight.Add(new LineOfSight
+                    {
+                        Distance = hit.distance,
+                        Type = 1
+                    });
+                }
+                else if (hit.collider.CompareTag("Dangerous"))
+                {
+                    s.LineOfSight.Add(new LineOfSight
+                    {
+                        Distance = hit.distance,
+                        Type = 2
+                    });
+                }
+            }
+            else
+            {
+                s.LineOfSight.Add(new LineOfSight
+                {
+                    Distance = -1,
+                    Type = 0
+                });
+            }
+        }
     }
 
 
