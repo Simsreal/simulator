@@ -136,7 +136,6 @@ public class AgentController : MonoBehaviour
     {
         Status s = new Status();
         s.HitPoint = (int)GetComponent<HitPoints>().HitPoint;
-        zmqCommunicator.SendFrame( s );
 
         IList<RaycastHit> hits = GetComponent<RayCaster>().hits;
         foreach (var hit in hits)
@@ -169,6 +168,8 @@ public class AgentController : MonoBehaviour
                 });
             }
         }
+
+        zmqCommunicator.SendFrame(s);
     }
 
 

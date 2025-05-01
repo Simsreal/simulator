@@ -868,7 +868,7 @@ MonoBehaviour:
   attackDamage: 10
   knockbackForce: 500
   attackCooldown: 1
-  moveSpeed: 10
+  moveSpeed: 5
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
