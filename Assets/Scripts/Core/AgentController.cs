@@ -121,9 +121,9 @@ public class AgentController : MonoBehaviour
 
     private class Status
     {
-        //public float X {  get; set; }
-        //public float Y { get; set; }
-        //public float Z { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
         //public float Orientation { get; set; }
         //public byte[] Frame { get; set; }
 
@@ -136,6 +136,10 @@ public class AgentController : MonoBehaviour
     {
         Status s = new Status();
         s.HitPoint = (int)GetComponent<HitPoints>().HitPoint;
+
+        s.X = transform.position.x;
+        s.Y = transform.position.y;
+        s.Z = transform.position.z;
 
         IList<RaycastHit> hits = GetComponent<RayCaster>().hits;
         foreach (var hit in hits)
