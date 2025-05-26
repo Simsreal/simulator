@@ -22,13 +22,13 @@ public class RayCaster : MonoBehaviour
     {
         hits = GetAllRaycastHits();
 
-        foreach (var hit in hits)
-        {
-            if (hit.collider != null)
-            {
-                Debug.Log($"Hit: {hit.collider.name}, Distance: {hit.distance}");
-            }
-        }
+        //foreach (var hit in hits)
+        //{
+        //    if (hit.collider != null)
+        //    {
+        //        Debug.Log($"Hit: {hit.collider.name}, Distance: {hit.distance}");
+        //    }
+        //}
     }
 
     List<RaycastHit> GetAllRaycastHits()

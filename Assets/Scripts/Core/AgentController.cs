@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using static Unity.Burst.Intrinsics.X86.Avx;
 using NUnit.Framework.Internal.Commands;
+using Newtonsoft.Json;
 
 public class AgentController : MonoBehaviour
 {
@@ -121,14 +122,20 @@ public class AgentController : MonoBehaviour
 
     private class Status
     {
+        [JsonProperty("x")]
         public float X { get; set; }
+        [JsonProperty("y")]
         public float Y { get; set; }
+        [JsonProperty("z")]
         public float Z { get; set; }
         //public float Orientation { get; set; }
         //public byte[] Frame { get; set; }
 
+        [JsonProperty("line_of_sight")]
         public List<LineOfSight> LineOfSight { get; } = new List<LineOfSight>();
 
+        // May be used for future
+        [JsonProperty("hit_point")]
         public int HitPoint { get; set; }
     }
 
