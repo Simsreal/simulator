@@ -15,6 +15,7 @@ public class AgentController : MonoBehaviour
 
     //public float maxSpeed = 1.0f;
     public float acceleration = 1.0f;
+    public int status = 0; // 0 - normal, 1 - fell down, 2 - won, await reset
 
     void Start()
     {
@@ -97,6 +98,24 @@ public class AgentController : MonoBehaviour
     }
     private void ApplyCommand(Cmd cmd)
     {
+        if (status == 1)
+        {
+            if (cmd.GetUp != 0)
+            {
+                status = 0; // Reset status to normal
+            }
+            return; // Ignore commands while in "fell down" state
+        }
+        if (status == 2)
+        {
+            // await reset
+            //if (cmd.Reset != 0)
+            //{
+            //    status = 0; // Reset status to normal
+            //}
+            return; // Ignore commands while in "won" state
+        }
+
         if (controlledObject == null) return;
 
         // Move
@@ -137,6 +156,9 @@ public class AgentController : MonoBehaviour
         // May be used for future
         [JsonProperty("hit_point")]
         public int HitPoint { get; set; }
+
+        [JsonProperty("state")]
+        public int State { get; set; }
     }
 
     void Update()
@@ -147,6 +169,7 @@ public class AgentController : MonoBehaviour
         s.X = transform.position.x;
         s.Y = transform.position.y;
         s.Z = transform.position.z;
+        s.State = status;
 
         IList<RaycastHit> hits = GetComponent<RayCaster>().hits;
         foreach (var hit in hits)
@@ -169,6 +192,30 @@ public class AgentController : MonoBehaviour
                         Type = 2
                     });
                 }
+                else if (hit.collider.CompareTag("Trap"))
+                {
+                    s.LineOfSight.Add(new LineOfSight
+                    {
+                        Distance = hit.distance,
+                        Type = 3
+                    });
+                }
+                else if (hit.collider.CompareTag("Goal"))
+                {
+                    s.LineOfSight.Add(new LineOfSight
+                    {
+                        Distance = hit.distance,
+                        Type = 4
+                    });
+                }
+                else if (hit.collider.CompareTag("People"))
+                {
+                    s.LineOfSight.Add(new LineOfSight
+                    {
+                        Distance = hit.distance,
+                        Type = 5
+                    });
+                }
             }
             else
             {
@@ -180,9 +227,21 @@ public class AgentController : MonoBehaviour
             }
         }
 
+        //Debug.Log($"Sending status: {JsonConvert.SerializeObject(s)}");
         zmqCommunicator.SendFrame(s);
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Trap"))
+        {
+            status = 1; // falling down
+        }
+        else if (collision.collider.CompareTag("Goal"))
+        {
+            status = 2; // win
+        }
+    }
 
     void OnDestroy()
     {

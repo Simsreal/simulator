@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Obstacle
   - Enemy
+  - Goal
+  - People
+  - Trap
   layers:
   - Default
   - TransparentFX

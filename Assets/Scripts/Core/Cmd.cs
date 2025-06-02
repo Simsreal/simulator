@@ -17,4 +17,6 @@ public class Cmd
     /// </summary>
     [JsonProperty("timestamp")]
     public long TimestampMs { get; set; }
+    [JsonProperty("get_up")]
+    public int GetUp { get; set; }
 }

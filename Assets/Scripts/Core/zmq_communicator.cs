@@ -88,7 +88,8 @@ public class ZmqCommunicator : IDisposable
         }
         try
         {
-            publisher.SendFrame(JsonUtility.ToJson(frame));
+            string jsonFrame = JsonConvert.SerializeObject(frame);
+            publisher.SendFrame(jsonFrame);
         }
         catch (Exception e)
         {

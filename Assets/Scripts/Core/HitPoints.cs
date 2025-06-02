@@ -42,6 +42,11 @@ public class HitPoints : MonoBehaviour
         }
     }
 
+    public void Reset()
+    {
+        currentHitPoints = maxHitPoints;
+    }
+
     public event Action<HitPoints> HitPointsChangedEvent;
     public event Action<HitPoints> DeadEvent;
 }

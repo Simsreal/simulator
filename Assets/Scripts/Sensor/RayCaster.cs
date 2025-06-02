@@ -46,10 +46,19 @@ public class RayCaster : MonoBehaviour
 
             results.Add(isHit ? hit : new RaycastHit { distance = -1 });
 
+#if DEBUG
             // Draw the ray in the editor for debugging
-            Debug.DrawRay(origin, dir * (isHit ? hit.distance : maxDistance),
-                         isHit ? Color.green : Color.yellow);
+            Color rayColor = Color.yellow;
+            if (isHit && hit.collider != null)
+            {
+                if (hit.collider.CompareTag("Obstacle"))
+                    rayColor = Color.green;
+                else
+                    rayColor = Color.red;
+            }
+            Debug.DrawRay(origin, dir * (isHit ? hit.distance : maxDistance), rayColor);
         }
+#endif
 
         return results;
     }
