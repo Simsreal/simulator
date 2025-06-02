@@ -15,7 +15,7 @@ public class AgentController : MonoBehaviour
 
     //public float maxSpeed = 1.0f;
     public float acceleration = 1.0f;
-    public int status = 0; // 0 - normal, 1 - fell down, 2 - won, await reset
+    public int status = 0; // 0 - normal, 1 - fell down, 2 - won, await reset, 3 - dead, await reset
 
     void Start()
     {
@@ -63,7 +63,21 @@ public class AgentController : MonoBehaviour
         zmqCommunicator.OnCmdReceived += OnCmdIn;
 
         StartCoroutine(ProcessCommands());
+
+        Hunger hunger = GetComponent<Hunger>();
+        if (hunger != null)
+        {
+            hunger.OnHungerDepleted += OnHungerDepletedHandler;
+        }
     }
+
+    private void OnHungerDepletedHandler()
+    {
+        if (status == 2) // If already won, ignore hunger depletion
+            return;
+        status = 3; // dead, await reset
+    }
+
     private void OnCmdIn(Cmd cmd)
     {
         lock (commandQueue)
@@ -106,14 +120,14 @@ public class AgentController : MonoBehaviour
             }
             return; // Ignore commands while in "fell down" state
         }
-        if (status == 2)
+        if (status == 2 || status == 3)
         {
             // await reset
             //if (cmd.Reset != 0)
             //{
             //    status = 0; // Reset status to normal
             //}
-            return; // Ignore commands while in "won" state
+            return; // Ignore commands while in "won"/"dead" state
         }
 
         if (controlledObject == null) return;
@@ -159,6 +173,8 @@ public class AgentController : MonoBehaviour
 
         [JsonProperty("state")]
         public int State { get; set; }
+        [JsonProperty("hunger")]
+        public int Hunger { get; set; }
     }
 
     void Update()
@@ -216,6 +232,14 @@ public class AgentController : MonoBehaviour
                         Type = 5
                     });
                 }
+                else if (hit.collider.CompareTag("Food"))
+                {
+                    s.LineOfSight.Add(new LineOfSight
+                    {
+                        Distance = hit.distance,
+                        Type = 6
+                    });
+                }
             }
             else
             {
@@ -246,5 +270,11 @@ public class AgentController : MonoBehaviour
     void OnDestroy()
     {
         zmqCommunicator?.Dispose();
+
+        Hunger hunger = GetComponent<Hunger>();
+        if (hunger != null)
+        {
+            hunger.OnHungerDepleted -= OnHungerDepletedHandler;
+        }
     }
 }

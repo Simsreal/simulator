@@ -946,6 +946,7 @@ GameObject:
   - component: {fileID: 1129314576}
   - component: {fileID: 1129314575}
   - component: {fileID: 1129314574}
+  - component: {fileID: 1129314582}
   m_Layer: 0
   m_Name: Agent
   m_TagString: Player
@@ -1116,6 +1117,21 @@ Transform:
   - {fileID: 1611581295}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1129314582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129314573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83bf0a5b7ca6db84392e1dfa0ecc721c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHunger: 100
+  hungerDecreaseRate: 5
+  currentHunger: 0
 --- !u!1 &1611581292
 GameObject:
   m_ObjectHideFlags: 0
@@ -1408,6 +1424,10 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   playerStartPosition: {x: 0, y: 0, z: 0}
   playerStartRotation: {x: 0, y: 0, z: 0, w: 0}
+  foodPrefab: {fileID: 8422025467915262380, guid: 32bbe290516aa3e469f4d392fe082970, type: 3}
+  foodCount: 10
+  foodAreaCenter: {x: 0, y: 0.76, z: -331.3}
+  foodAreaSize: {x: 40, y: 70}
 --- !u!4 &1740521937
 Transform:
   m_ObjectHideFlags: 0
@@ -1417,7 +1437,7 @@ Transform:
   m_GameObject: {fileID: 1740521935}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.938066, y: 7.0828605, z: -291.89578}
+  m_LocalPosition: {x: 0, y: 0.76, z: -331.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
