@@ -277,7 +277,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_Name
-      value: Gate (1)
+      value: Gate1
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_TagString
@@ -338,7 +338,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_Name
-      value: Gate
+      value: Gate0
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_TagString
@@ -759,7 +759,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_Name
-      value: Gate (4)
+      value: Gate4
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_TagString
@@ -922,7 +922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ed6b1e0fe82316499948e076aaae094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trapPrefab: {fileID: 0}
+  trapPrefab: {fileID: 8422025467915262380, guid: dc04e88bcb351404c8b50a2f8b3994f1, type: 3}
   spawnInterval: 5
   maxTraps: 10
   spawnRadius: 10
@@ -1303,7 +1303,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_Name
-      value: Gate (3)
+      value: Gate3
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_TagString
@@ -1364,7 +1364,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_Name
-      value: Gate (2)
+      value: Gate2
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_TagString
@@ -1375,6 +1375,54 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+--- !u!1 &1740521935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1740521937}
+  - component: {fileID: 1740521936}
+  m_Layer: 0
+  m_Name: Director
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1740521936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1740521935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7447b5fb1d69c143a84e4b798552ee0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentController: {fileID: 0}
+  playerTransform: {fileID: 0}
+  playerStartPosition: {x: 0, y: 0, z: 0}
+  playerStartRotation: {x: 0, y: 0, z: 0, w: 0}
+--- !u!4 &1740521937
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1740521935}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.938066, y: 7.0828605, z: -291.89578}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1932162403
 GameObject:
   m_ObjectHideFlags: 0
@@ -1619,3 +1667,4 @@ SceneRoots:
   - {fileID: 1651983895}
   - {fileID: 1058427882}
   - {fileID: 1088203128}
+  - {fileID: 1740521937}
