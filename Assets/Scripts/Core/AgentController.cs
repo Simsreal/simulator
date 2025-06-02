@@ -174,7 +174,7 @@ public class AgentController : MonoBehaviour
         [JsonProperty("state")]
         public int State { get; set; }
         [JsonProperty("hunger")]
-        public int Hunger { get; set; }
+        public float Hunger { get; set; }
     }
 
     void Update()
@@ -186,6 +186,7 @@ public class AgentController : MonoBehaviour
         s.Y = transform.position.y;
         s.Z = transform.position.z;
         s.State = status;
+        s.Hunger = GetComponent<Hunger>().currentHunger;
 
         IList<RaycastHit> hits = GetComponent<RayCaster>().hits;
         foreach (var hit in hits)
