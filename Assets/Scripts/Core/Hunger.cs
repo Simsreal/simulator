@@ -9,7 +9,7 @@ public class Hunger : MonoBehaviour
     public float currentHunger;
 
     // Triggered when hunger reaches zero
-    public event Action OnHungerDepleted;
+    public event Action<Hunger> OnHungerDepleted;
 
     private bool depleted = false;
 
@@ -31,7 +31,7 @@ public class Hunger : MonoBehaviour
                 if (!depleted)
                 {
                     depleted = true;
-                    OnHungerDepleted?.Invoke();
+                    OnHungerDepleted?.Invoke(this);
                 }
             }
         }
@@ -50,5 +50,6 @@ public class Hunger : MonoBehaviour
     public void Reset()
     {
         currentHunger = maxHunger;
+        depleted = false;
     }
 }

@@ -41,7 +41,7 @@ public class Director : MonoBehaviour
             {
                 Debug.Log("Reset detected: Agent has won or died.");
                 resetDetected = true;
-                StartCoroutine(ResetAfterDelay(10f));
+                StartCoroutine(ResetAfterDelay(5f));
             }
         }
     }

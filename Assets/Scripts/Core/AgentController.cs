@@ -72,7 +72,7 @@ public class AgentController : MonoBehaviour
         }
     }
 
-    private void OnHungerDepletedHandler()
+    private void OnHungerDepletedHandler(Hunger sender)
     {
         if (status == 2) // If already won, ignore hunger depletion
             return;
@@ -325,6 +325,7 @@ public class AgentController : MonoBehaviour
         if (hunger != null)
         {
             hunger.OnHungerDepleted -= OnHungerDepletedHandler;
+            Debug.Log("Hunger handler removed.");
         }
     }
 }
