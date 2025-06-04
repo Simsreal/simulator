@@ -7,7 +7,7 @@ public class Action
     /// 要采取的动作类型。
     /// </summary>
     /// <remarks>
-    /// 约定的可行值：moveup, movedown, moveleft, moveright, idle, standup
+    /// 约定的可行值：moveforward, moveback, lookright, lookleft, idle, standup
     /// </remarks>
     [JsonProperty("movement")]
     public string Movement { get; set; }

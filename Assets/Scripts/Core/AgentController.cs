@@ -14,7 +14,7 @@ public class AgentController : MonoBehaviour
     private Queue<Cmd> commandQueue;
     private Rigidbody controlledObject;
 
-    //public float maxSpeed = 1.0f;
+    public float maxSpeed = 1.0f;
     public float acceleration = 1.0f;
     public int status = 0; // 0 - normal, 1 - fell down, 2 - won, await reset, 3 - dead, await reset
 
@@ -86,6 +86,7 @@ public class AgentController : MonoBehaviour
             commandQueue.Enqueue(cmd);
         }
     }
+    private Cmd latestCmd = null;
     private long lastCommandTimestamp = 0; // Timestamp of the last command processed
     private IEnumerator ProcessCommands()
     {
@@ -114,13 +115,14 @@ public class AgentController : MonoBehaviour
                 // Ignore commands that are older than the last processed command
                 continue;
             }
-            if (cmd.TimestampMs - lastCommandTimestamp < Time.deltaTime) // should it be another fixed value?
-            {
-                // If the command is too close to the last one, ignore it
-                continue;
-            }
+            //if (cmd.TimestampMs - lastCommandTimestamp < Time.deltaTime) // should it be another fixed value?
+            //{
+            //    // If the command is too close to the last one, ignore it
+            //    continue;
+            //}
 
-            ApplyCommand(cmd);
+            //ApplyCommand(cmd);
+            latestCmd = cmd; // Store the last command for debugging
         }
     }
     private void ApplyCommand(Cmd cmd)
@@ -146,10 +148,10 @@ public class AgentController : MonoBehaviour
         Vector3 targetDirection = Vector3.zero;
         switch (cmd.Action.Movement)
         {
-            case "moveup": // forward
+            case "moveforward": // forward
                 targetDirection = transform.forward;
                 break;
-            case "movedown": // backward
+            case "movebackward": // backward
                 targetDirection = -transform.forward;
                 break;
             case "moveleft": // left
@@ -172,8 +174,11 @@ public class AgentController : MonoBehaviour
 
         if (targetDirection != Vector3.zero)
         {
-            targetDirection.Normalize();
-            controlledObject.AddForce(targetDirection * acceleration, ForceMode.Acceleration);
+            float vel = controlledObject.linearVelocity.magnitude;
+            if (vel < maxSpeed)
+            {
+                controlledObject.AddForce(targetDirection.normalized * acceleration, ForceMode.Impulse);
+            }
         }
     }
 
@@ -205,6 +210,20 @@ public class AgentController : MonoBehaviour
         public int State { get; set; }
         [JsonProperty("hunger")]
         public float Hunger { get; set; }
+    }
+
+    private void FixedUpdate()
+    {
+        if (zmqCommunicator == null)
+        {
+            Debug.LogWarning("ZMQ Communicator is not running, skipping FixedUpdate.");
+            return;
+        }
+        if (latestCmd != null)
+        {
+            ApplyCommand(latestCmd);
+            latestCmd = null; // Clear the command after applying
+        }
     }
 
     void Update()
