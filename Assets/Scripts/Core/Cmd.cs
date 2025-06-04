@@ -1,22 +1,24 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
+public class Action
+{
+    /// <summary>
+    /// 要采取的动作类型。
+    /// </summary>
+    /// <remarks>
+    /// 约定的可行值：moveup, movedown, moveleft, moveright, idle, standup
+    /// </remarks>
+    [JsonProperty("movement")]
+    public string Movement { get; set; }
+    [JsonProperty("confidence")]
+    public float Confidence { get; set; }
+}
+
 public class Cmd
 {
-    [JsonProperty("x")]
-    public float X { get; set; }
-    [JsonProperty("y")]
-    public float Y { get; set; }
-    /// <summary>
-    /// Orientation of the agent
-    /// </summary>
-    [JsonProperty("orientation")]
-    public float Orientation { get; set; }
-    /// <summary>
-    /// Unix timestamp in millisecond
-    /// </summary>
     [JsonProperty("timestamp")]
     public long TimestampMs { get; set; }
-    [JsonProperty("get_up")]
-    public int GetUp { get; set; }
+    [JsonProperty("action")]
+    public Action Action { get; set; }
 }

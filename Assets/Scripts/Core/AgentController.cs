@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 public class AgentController : MonoBehaviour
 {
+    private const int commandStaleThresholdMs = 200;
     private ZmqCommunicator zmqCommunicator;
     private Queue<Cmd> commandQueue;
     private Rigidbody controlledObject;
@@ -85,6 +86,7 @@ public class AgentController : MonoBehaviour
             commandQueue.Enqueue(cmd);
         }
     }
+    private long lastCommandTimestamp = 0; // Timestamp of the last command processed
     private IEnumerator ProcessCommands()
     {
         while (true)
@@ -105,16 +107,28 @@ public class AgentController : MonoBehaviour
             }
             if (cmd == null) continue;
 
-            if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - cmd.TimestampMs > 200) continue;
+            // Check if the command is too old (more than 200 ms)
+            if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - cmd.TimestampMs > commandStaleThresholdMs) continue;
+            if (cmd.TimestampMs <= lastCommandTimestamp)
+            {
+                // Ignore commands that are older than the last processed command
+                continue;
+            }
+            if (cmd.TimestampMs - lastCommandTimestamp < Time.deltaTime) // should it be another fixed value?
+            {
+                // If the command is too close to the last one, ignore it
+                continue;
+            }
 
             ApplyCommand(cmd);
         }
     }
     private void ApplyCommand(Cmd cmd)
     {
+        lastCommandTimestamp = cmd.TimestampMs;
         if (status == 1)
         {
-            if (cmd.GetUp != 0)
+            if (cmd.Action.Movement == "standup")
             {
                 status = 0; // Reset status to normal
             }
@@ -123,28 +137,44 @@ public class AgentController : MonoBehaviour
         if (status == 2 || status == 3)
         {
             // await reset
-            //if (cmd.Reset != 0)
-            //{
-            //    status = 0; // Reset status to normal
-            //}
             return; // Ignore commands while in "won"/"dead" state
         }
 
         if (controlledObject == null) return;
 
         // Move
-        Vector3 targetDirection = new Vector3(cmd.X, cmd.Y, 0);
-        targetDirection.Normalize();
+        Vector3 targetDirection = Vector3.zero;
+        switch (cmd.Action.Movement)
+        {
+            case "moveup": // forward
+                targetDirection = transform.forward;
+                break;
+            case "movedown": // backward
+                targetDirection = -transform.forward;
+                break;
+            case "moveleft": // left
+                targetDirection = -transform.right;
+                break;
+            case "moveright": // right
+                targetDirection = transform.right;
+                break;
+            case "lookleft": // turn left
+                controlledObject.MoveRotation(
+                    controlledObject.rotation * Quaternion.Euler(0, -90f * Time.deltaTime, 0)
+                );
+                break;
+            case "lookright": // turn right
+                controlledObject.MoveRotation(
+                    controlledObject.rotation * Quaternion.Euler(0, 90f * Time.deltaTime, 0)
+                );
+                break;
+        }
 
-        controlledObject.AddForce(targetDirection * acceleration, ForceMode.Acceleration);
-
-        // Rotate
-        Quaternion targetRotation = Quaternion.Euler(0, 0, -cmd.Orientation); // Z-Axis Rotation
-        controlledObject.rotation = Quaternion.Slerp(
-            controlledObject.rotation,
-            targetRotation,
-            Time.deltaTime * 5f
-        );
+        if (targetDirection != Vector3.zero)
+        {
+            targetDirection.Normalize();
+            controlledObject.AddForce(targetDirection * acceleration, ForceMode.Acceleration);
+        }
     }
 
     private class LineOfSight
