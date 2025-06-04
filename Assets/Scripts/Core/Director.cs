@@ -58,7 +58,7 @@ public class Director : MonoBehaviour
         Debug.Log("Resetting game state...");
         // Reset position, rotation and state
         if (agentController != null)
-            agentController.status = 0;
+            agentController.ResetStatus();
         if (playerTransform != null)
             playerTransform.position = playerStartPosition;
         if (playerTransform != null)

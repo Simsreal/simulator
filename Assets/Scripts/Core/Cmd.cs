@@ -18,7 +18,7 @@ public class Action
 public class Cmd
 {
     [JsonProperty("timestamp")]
-    public long TimestampMs { get; set; }
+    public long TimestampS { get; set; }
     [JsonProperty("action")]
     public Action Action { get; set; }
 }

@@ -9,14 +9,30 @@ using Newtonsoft.Json;
 
 public class AgentController : MonoBehaviour
 {
-    private const int commandStaleThresholdMs = 200;
+    private const int commandStaleThresholdS = 20;
     private ZmqCommunicator zmqCommunicator;
     private Queue<Cmd> commandQueue;
     private Rigidbody controlledObject;
 
-    public float maxSpeed = 1.0f;
+    public float maxSpeed = 10.0f;
     public float acceleration = 1.0f;
     public int status = 0; // 0 - normal, 1 - fell down, 2 - won, await reset, 3 - dead, await reset
+
+    public void ResetStatus()
+    {
+         controlledObject = GetComponent<Rigidbody>();
+        if (controlledObject == null)
+        {
+            Debug.LogError("Rigidbody component is missing on the AgentController GameObject.");
+        }
+        else
+        {
+            controlledObject.linearVelocity = Vector3.zero;
+            controlledObject.angularVelocity = Vector3.zero;
+        }
+        status = 0;
+        latestCmd = null;
+    }
 
     void Start()
     {
@@ -109,9 +125,15 @@ public class AgentController : MonoBehaviour
             if (cmd == null) continue;
 
             // Check if the command is too old (more than 200 ms)
-            if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - cmd.TimestampMs > commandStaleThresholdMs) continue;
-            if (cmd.TimestampMs <= lastCommandTimestamp)
+            if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - cmd.TimestampS > commandStaleThresholdS)
             {
+                //Debug.Log($"Ignoring stale command: {cmd.Action.Movement} at {cmd.TimestampMs} (older than {commandStaleThresholdMs} ms)");
+                //continue;
+                Debug.Log($"Stale command: {cmd.Action.Movement} at {DateTimeOffset.UtcNow.ToUnixTimeSeconds() - cmd.TimestampS} before (older than {commandStaleThresholdS} s), processing anyway.");
+            }
+            if (cmd.TimestampS < lastCommandTimestamp)
+            {
+                Debug.Log($"Ignoring command: {cmd.Action.Movement} at {cmd.TimestampS} (earlier than the last command at {lastCommandTimestamp})");
                 // Ignore commands that are older than the last processed command
                 continue;
             }
@@ -121,13 +143,14 @@ public class AgentController : MonoBehaviour
             //    continue;
             //}
 
-            //ApplyCommand(cmd);
-            latestCmd = cmd; // Store the last command for debugging
+            // ApplyCommand(cmd);
+            latestCmd = cmd;
         }
     }
     private void ApplyCommand(Cmd cmd)
     {
-        lastCommandTimestamp = cmd.TimestampMs;
+        //Debug.Log($"Applying command: {cmd.Action.Movement} at {cmd.TimestampS}");
+        lastCommandTimestamp = cmd.TimestampS;
         if (status == 1)
         {
             if (cmd.Action.Movement == "standup")
@@ -142,7 +165,11 @@ public class AgentController : MonoBehaviour
             return; // Ignore commands while in "won"/"dead" state
         }
 
-        if (controlledObject == null) return;
+        if (controlledObject == null)
+        {
+            Debug.LogWarning("Controlled object is null, cannot apply command.");
+            return;
+        }
 
         // Move
         Vector3 targetDirection = Vector3.zero;
@@ -214,15 +241,9 @@ public class AgentController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (zmqCommunicator == null)
-        {
-            Debug.LogWarning("ZMQ Communicator is not running, skipping FixedUpdate.");
-            return;
-        }
         if (latestCmd != null)
         {
             ApplyCommand(latestCmd);
-            latestCmd = null; // Clear the command after applying
         }
     }
 
@@ -303,6 +324,70 @@ public class AgentController : MonoBehaviour
 
         //Debug.Log($"Sending status: {JsonConvert.SerializeObject(s)}");
         zmqCommunicator.SendFrame(s);
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            Cmd cmd = new Cmd
+            {
+                TimestampS = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Action = new Action { Movement = "moveforward" }
+            };
+            OnCmdIn(cmd);
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            Cmd cmd = new Cmd
+            {
+                TimestampS = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Action = new Action { Movement = "movebackward" }
+            };
+            OnCmdIn(cmd);
+        }
+        else if (Input.GetKey(KeyCode.A))
+        {
+            Cmd cmd = new Cmd
+            {
+                TimestampS = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Action = new Action { Movement = "moveleft" }
+            };
+            OnCmdIn(cmd);
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            Cmd cmd = new Cmd
+            {
+                TimestampS = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Action = new Action { Movement = "moveright" }
+            };
+            OnCmdIn(cmd);
+        }
+        else if (Input.GetKey(KeyCode.Q))
+        {
+            Cmd cmd = new Cmd
+            {
+                TimestampS = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Action = new Action { Movement = "lookleft" }
+            };
+            OnCmdIn(cmd);
+        }
+        else if (Input.GetKey(KeyCode.E))
+        {
+            Cmd cmd = new Cmd
+            {
+                TimestampS = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Action = new Action { Movement = "lookright" }
+            };
+            OnCmdIn(cmd);
+        }
+        else if (Input.GetKey(KeyCode.Space))
+        {
+            Cmd cmd = new Cmd
+            {
+                TimestampS = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Action = new Action { Movement = "standup" }
+            };
+            OnCmdIn(cmd);
+        }
     }
 
     void OnCollisionEnter(Collision collision)
