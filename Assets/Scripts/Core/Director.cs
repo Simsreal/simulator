@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 public class Director : MonoBehaviour
 {
@@ -11,11 +12,15 @@ public class Director : MonoBehaviour
     public GameObject foodPrefab; // Set in Inspector to the food prefab
     public int foodCount = 10; // Number of food items to spawn
 
+    public int seed = 42; // Random seed for reproducibility, can be set in Inspector, -1 for random
+
     public Vector3 foodAreaCenter = Vector3.zero;
     public Vector2 foodAreaSize = new Vector2(40f, 40f);
     private List<GameObject> spawnedFood = new List<GameObject>();
 
     private bool resetDetected = false;
+
+    private System.Random randomGenerator;
 
     void Start()
     {
@@ -28,6 +33,8 @@ public class Director : MonoBehaviour
             playerStartPosition = playerTransform.position;
         if (playerTransform != null)
             playerStartRotation = playerTransform.rotation;
+
+        randomGenerator = (seed == -1) ? new System.Random() : new System.Random(seed);
 
         RandomizeGatePositions();
         SpawnFoodInArea();
@@ -85,7 +92,7 @@ public class Director : MonoBehaviour
         SpawnFoodInArea();
     }
 
-    private static void RandomizeGatePositions()
+    private void RandomizeGatePositions()
     {
         for (int i = 0; i <= 5; i++)
         {
@@ -94,7 +101,7 @@ public class Director : MonoBehaviour
             if (gate != null)
             {
                 Vector3 pos = gate.transform.position;
-                pos.x = Random.Range(-20f, 20f);
+                pos.x = (float)randomGenerator.NextDouble() * 40f - 20f; // Random X between -20 and 20
                 gate.transform.position = pos;
             }
         }
@@ -114,8 +121,8 @@ public class Director : MonoBehaviour
 
         for (int i = 0; i < foodCount; i++)
         {
-            float x = Random.Range(foodAreaCenter.x - foodAreaSize.x / 2, foodAreaCenter.x + foodAreaSize.x / 2);
-            float z = Random.Range(foodAreaCenter.z - foodAreaSize.y / 2, foodAreaCenter.z + foodAreaSize.y / 2);
+            float x = (float)randomGenerator.NextDouble() * foodAreaSize.x - foodAreaSize.x / 2 + foodAreaCenter.x;
+            float z = (float)randomGenerator.NextDouble() * foodAreaSize.y - foodAreaSize.y / 2 + foodAreaCenter.z;
             float y = foodAreaCenter.y;
             Vector3 pos = new Vector3(x, y, z);
             GameObject food = Instantiate(foodPrefab, pos, Quaternion.identity);
