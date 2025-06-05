@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 public class AgentController : MonoBehaviour
 {
-    private const int commandStaleThresholdS = 20;
+    private const int commandStaleThresholdS = 2;
     private ZmqCommunicator zmqCommunicator;
     private Queue<Cmd> commandQueue;
     private Rigidbody controlledObject;
@@ -18,9 +18,16 @@ public class AgentController : MonoBehaviour
     public float acceleration = 1.0f;
     public int status = 0; // 0 - normal, 1 - fell down, 2 - won, await reset, 3 - dead, await reset
 
+    private float lastStatusSendTime = 0f;
+    private float statusSendInterval = 0.05f; // 20Hz instead of every frame
+
+    // Add coroutine reference for proper cleanup
+    private Coroutine processCommandsCoroutine;
+    private bool isShuttingDown = false;
+
     public void ResetStatus()
     {
-         controlledObject = GetComponent<Rigidbody>();
+        controlledObject = GetComponent<Rigidbody>();
         if (controlledObject == null)
         {
             Debug.LogError("Rigidbody component is missing on the AgentController GameObject.");
@@ -36,8 +43,10 @@ public class AgentController : MonoBehaviour
 
     void Start()
     {
+        isShuttingDown = false;
+
         string configPath = Path.Combine(Application.persistentDataPath, "zmq_config.json");
-        Debug.Log("Loading zmq config from " +  configPath);
+        Debug.Log("Loading zmq config from " + configPath);
         ZmqConfig config = new ZmqConfig
         {
             pubAddress = "tcp://0.0.0.0:5556",
@@ -57,7 +66,6 @@ public class AgentController : MonoBehaviour
         else
         {
             string text = File.ReadAllText(configPath);
-
             config = JsonUtility.FromJson<ZmqConfig>(text);
         }
 
@@ -73,18 +81,24 @@ public class AgentController : MonoBehaviour
         }
 
         controlledObject = GetComponent<Rigidbody>();
-
         commandQueue = new Queue<Cmd>();
 
-        zmqCommunicator = new ZmqCommunicator(config.pubAddress, config.subAddress);
-        zmqCommunicator.OnCmdReceived += OnCmdIn;
-
-        StartCoroutine(ProcessCommands());
-
-        Hunger hunger = GetComponent<Hunger>();
-        if (hunger != null)
+        try
         {
-            hunger.OnHungerDepleted += OnHungerDepletedHandler;
+            zmqCommunicator = new ZmqCommunicator(config.pubAddress, config.subAddress);
+            zmqCommunicator.OnCmdReceived += OnCmdIn;
+
+            processCommandsCoroutine = StartCoroutine(ProcessCommands());
+
+            Hunger hunger = GetComponent<Hunger>();
+            if (hunger != null)
+            {
+                hunger.OnHungerDepleted += OnHungerDepletedHandler;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to initialize ZMQ: {e.Message}");
         }
     }
 
@@ -97,16 +111,25 @@ public class AgentController : MonoBehaviour
 
     private void OnCmdIn(Cmd cmd)
     {
+        if (isShuttingDown) return;
+
+        Debug.Log($"[DEBUG] Command received: Movement={cmd?.Action?.Movement}, Timestamp={cmd?.TimestampS}, Confidence={cmd?.Action?.Confidence}");
         lock (commandQueue)
         {
+            if (commandQueue.Count > 5) // Keep max 5 commands
+            {
+                commandQueue.Clear();
+            }
             commandQueue.Enqueue(cmd);
         }
     }
+
     private Cmd latestCmd = null;
     private long lastCommandTimestamp = 0; // Timestamp of the last command processed
+
     private IEnumerator ProcessCommands()
     {
-        while (true)
+        while (!isShuttingDown)
         {
             Cmd cmd = null;
             lock (commandQueue)
@@ -114,39 +137,37 @@ public class AgentController : MonoBehaviour
                 if (commandQueue.Count == 0)
                 {
                     cmd = null;
-                    yield return null;
                 }
                 else
                 {
                     cmd = commandQueue.Dequeue();
                 }
-                //_commandQueue.Clear(); // Ignore all following commands
             }
-            if (cmd == null) continue;
 
-            // Check if the command is too old (more than 200 ms)
+            if (cmd == null)
+            {
+                yield return new WaitForSeconds(0.01f); // Small delay instead of null
+                continue;
+            }
+
+            Debug.Log($"Processing command: {cmd.Action.Movement} at {cmd.TimestampS}");
+
+            // Check if the command is too old
             if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - cmd.TimestampS > commandStaleThresholdS)
             {
-                //Debug.Log($"Ignoring stale command: {cmd.Action.Movement} at {cmd.TimestampMs} (older than {commandStaleThresholdMs} ms)");
-                //continue;
-                Debug.Log($"Stale command: {cmd.Action.Movement} at {DateTimeOffset.UtcNow.ToUnixTimeSeconds() - cmd.TimestampS} before (older than {commandStaleThresholdS} s), processing anyway.");
+                Debug.Log($"Stale command: {cmd.Action.Movement} at {DateTimeOffset.UtcNow.ToUnixTimeSeconds() - cmd.TimestampS}s before (older than {commandStaleThresholdS} s), processing anyway.");
             }
             if (cmd.TimestampS < lastCommandTimestamp)
             {
                 Debug.Log($"Ignoring command: {cmd.Action.Movement} at {cmd.TimestampS} (earlier than the last command at {lastCommandTimestamp})");
-                // Ignore commands that are older than the last processed command
                 continue;
             }
-            //if (cmd.TimestampMs - lastCommandTimestamp < Time.deltaTime) // should it be another fixed value?
-            //{
-            //    // If the command is too close to the last one, ignore it
-            //    continue;
-            //}
 
-            // ApplyCommand(cmd);
             latestCmd = cmd;
+            yield return null; // Yield control back to Unity
         }
     }
+
     private void ApplyCommand(Cmd cmd)
     {
         //Debug.Log($"Applying command: {cmd.Action.Movement} at {cmd.TimestampS}");
@@ -241,7 +262,7 @@ public class AgentController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (latestCmd != null)
+        if (!isShuttingDown && latestCmd != null)
         {
             ApplyCommand(latestCmd);
         }
@@ -249,6 +270,14 @@ public class AgentController : MonoBehaviour
 
     void Update()
     {
+        if (isShuttingDown) return;
+
+        if (Time.time - lastStatusSendTime < statusSendInterval)
+        {
+            return;
+        }
+        lastStatusSendTime = Time.time;
+
         Status s = new Status();
         s.HitPoint = (int)GetComponent<HitPoints>().HitPoint;
 
@@ -322,9 +351,16 @@ public class AgentController : MonoBehaviour
             }
         }
 
-        //Debug.Log($"Sending status: {JsonConvert.SerializeObject(s)}");
-        zmqCommunicator.SendFrame(s);
+        try
+        {
+            zmqCommunicator?.SendFrame(s);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Failed to send frame: {e.Message}");
+        }
 
+        // Input handling (existing code)
         if (Input.GetKey(KeyCode.W))
         {
             Cmd cmd = new Cmd
@@ -388,6 +424,13 @@ public class AgentController : MonoBehaviour
             };
             OnCmdIn(cmd);
         }
+
+        // Add this at the end of the Update() method, after the existing input handling
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("ESC pressed - stopping simulation manually");
+            StopSimulation();
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -402,15 +445,61 @@ public class AgentController : MonoBehaviour
         }
     }
 
+    // Keep only these cleanup methods:
+    void OnApplicationQuit()
+    {
+        CleanupZMQ();
+    }
+
     void OnDestroy()
     {
-        zmqCommunicator?.Dispose();
+        CleanupZMQ();
+    }
 
+    // Add a manual stop method that you can call when you actually want to stop
+    public void StopSimulation()
+    {
+        CleanupZMQ();
+    }
+
+    private void CleanupZMQ()
+    {
+        if (isShuttingDown) return;
+
+        isShuttingDown = true;
+        Debug.Log("Starting ZMQ cleanup...");
+
+        // Stop the coroutine
+        if (processCommandsCoroutine != null)
+        {
+            StopCoroutine(processCommandsCoroutine);
+            processCommandsCoroutine = null;
+        }
+
+        // Remove event handlers
+        if (zmqCommunicator != null)
+        {
+            zmqCommunicator.OnCmdReceived -= OnCmdIn;
+        }
+
+        // Remove hunger handler
         Hunger hunger = GetComponent<Hunger>();
         if (hunger != null)
         {
             hunger.OnHungerDepleted -= OnHungerDepletedHandler;
-            Debug.Log("Hunger handler removed.");
         }
+
+        // Dispose ZMQ communicator
+        try
+        {
+            zmqCommunicator?.Dispose();
+            zmqCommunicator = null;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Error during ZMQ disposal: {e.Message}");
+        }
+
+        Debug.Log("ZMQ cleanup completed.");
     }
 }
