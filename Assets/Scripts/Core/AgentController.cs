@@ -303,6 +303,10 @@ public class AgentController : MonoBehaviour
         s.State = status;
         s.Hunger = GetComponent<Hunger>().currentHunger;
         s.Orientation = transform.rotation.eulerAngles.y;
+        if (s.Orientation < 0)
+        {
+            s.Orientation += 360; // Normalize to [0, 360) range
+        }
 
         IList<RaycastHit> hits = GetComponent<RayCaster>().hits;
         foreach (var hit in hits)
