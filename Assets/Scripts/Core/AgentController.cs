@@ -14,8 +14,11 @@ public class AgentController : MonoBehaviour
     private Queue<Cmd> commandQueue;
     private Rigidbody controlledObject;
 
-    public float maxSpeed = 10.0f;
-    public float acceleration = 1.0f;
+    public float moveDistance = 1.0f; // Distance to move per command
+    public float turnAngle = 1f; // Angle to turn per command
+
+    //public float maxSpeed = 10.0f;
+    //public float acceleration = 1.0f;
     public int status = 0; // 0 - normal, 1 - fell down, 2 - won, await reset, 3 - dead, await reset
 
     private float lastStatusSendTime = 0f;
@@ -210,22 +213,32 @@ public class AgentController : MonoBehaviour
                 break;
             case "lookleft": // turn left
                 controlledObject.MoveRotation(
-                    controlledObject.rotation * Quaternion.Euler(0, -90f * Time.deltaTime, 0)
+                    controlledObject.rotation * Quaternion.Euler(0, -1f, 0)
                 );
                 break;
             case "lookright": // turn right
                 controlledObject.MoveRotation(
-                    controlledObject.rotation * Quaternion.Euler(0, 90f * Time.deltaTime, 0)
+                    controlledObject.rotation * Quaternion.Euler(0, 1f, 0)
                 );
                 break;
         }
 
         if (targetDirection != Vector3.zero)
         {
-            float vel = controlledObject.linearVelocity.magnitude;
-            if (vel < maxSpeed)
+            //float vel = controlledObject.linearVelocity.magnitude;
+            //if (vel < maxSpeed)
+            //{
+            //    controlledObject.AddForce(targetDirection.normalized * acceleration, ForceMode.Impulse);
+            //}
+            Vector3 newPosition = controlledObject.position + targetDirection * moveDistance;
+
+            if (!Physics.CheckCapsule(
+                controlledObject.position,
+                newPosition,
+                GetComponent<CapsuleCollider>().radius,
+                LayerMask.GetMask(new string[] { "Wall" })))
             {
-                controlledObject.AddForce(targetDirection.normalized * acceleration, ForceMode.Impulse);
+                controlledObject.MovePosition(newPosition);
             }
         }
     }
@@ -265,6 +278,7 @@ public class AgentController : MonoBehaviour
         if (!isShuttingDown && latestCmd != null)
         {
             ApplyCommand(latestCmd);
+            latestCmd = null; // Clear the command after applying it
         }
     }
 
@@ -338,6 +352,15 @@ public class AgentController : MonoBehaviour
                     {
                         Distance = hit.distance,
                         Type = 6
+                    });
+                }
+                else
+                {
+                    Debug.LogWarning($"Unknown tag '{hit.collider.tag}' on collider '{hit.collider.name}'");
+                    s.LineOfSight.Add(new LineOfSight
+                    {
+                        Distance = hit.distance,
+                        Type = 0 // Default type for unknown objects
                     });
                 }
             }

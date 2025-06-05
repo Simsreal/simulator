@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 210044672}
   - component: {fileID: 210044671}
   m_Layer: 0
-  m_Name: Boundary (12)
+  m_Name: Goal
   m_TagString: Goal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -147,11 +147,11 @@ Transform:
   m_GameObject: {fileID: 210044669}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.37, y: 9.721001, z: -251.17}
+  m_LocalPosition: {x: -0.43397045, y: 2, z: -257.73352}
   m_LocalScale: {x: 51.868748, y: 4, z: 0.062977}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 924319239}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &210044671
 BoxCollider:
@@ -275,13 +275,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2940608141002898386, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_Name
       value: Gate1
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_TagString
       value: Obstacle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5359241202691427167, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -336,13 +348,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2940608141002898386, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_Name
       value: Gate0
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_TagString
       value: Obstacle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5359241202691427167, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -358,7 +382,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 924319239}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Boundaries
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -379,7 +403,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 928707909}
-  - {fileID: 210044670}
   - {fileID: 1068878715}
   - {fileID: 999426742}
   - {fileID: 1025564254}
@@ -397,7 +420,7 @@ GameObject:
   - component: {fileID: 928707912}
   - component: {fileID: 928707911}
   - component: {fileID: 928707910}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Boundary
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -505,7 +528,7 @@ GameObject:
   - component: {fileID: 999426745}
   - component: {fileID: 999426744}
   - component: {fileID: 999426743}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Boundary - 2
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -613,7 +636,7 @@ GameObject:
   - component: {fileID: 1025564257}
   - component: {fileID: 1025564256}
   - component: {fileID: 1025564255}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Boundary - 1
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -757,13 +780,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2940608141002898386, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_Name
       value: Gate4
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_TagString
       value: Obstacle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5359241202691427167, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -782,7 +817,7 @@ GameObject:
   - component: {fileID: 1068878718}
   - component: {fileID: 1068878717}
   - component: {fileID: 1068878716}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Boundary - 3
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -982,8 +1017,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68ef682acdb13ac4f90e31e13d286c3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 10
-  acceleration: 10
+  moveDistance: 1
+  turnAngle: 1
   status: 0
 --- !u!114 &1129314576
 MonoBehaviour:
@@ -1318,13 +1353,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2940608141002898386, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_Name
       value: Gate3
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_TagString
       value: Obstacle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5359241202691427167, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1379,13 +1426,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2940608141002898386, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_Name
       value: Gate2
       objectReference: {fileID: 0}
     - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3116105199872161938, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
       propertyPath: m_TagString
       value: Obstacle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5359241202691427167, guid: 59cd584532f45314d8a95cefc7153e7c, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1427,7 +1486,7 @@ MonoBehaviour:
   playerStartRotation: {x: 0, y: 0, z: 0, w: 0}
   foodPrefab: {fileID: 8422025467915262380, guid: 32bbe290516aa3e469f4d392fe082970, type: 3}
   foodCount: 10
-  foodAreaCenter: {x: 0, y: 0.76, z: -331.3}
+  foodAreaCenter: {x: 0, y: 1, z: -331.3}
   foodAreaSize: {x: 40, y: 70}
 --- !u!4 &1740521937
 Transform:
@@ -1689,3 +1748,4 @@ SceneRoots:
   - {fileID: 1058427882}
   - {fileID: 1088203128}
   - {fileID: 1740521937}
+  - {fileID: 210044670}
