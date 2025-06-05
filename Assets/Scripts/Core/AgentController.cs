@@ -271,6 +271,8 @@ public class AgentController : MonoBehaviour
         public int State { get; set; }
         [JsonProperty("hunger")]
         public float Hunger { get; set; }
+        [JsonProperty("orientation")]
+        public float Orientation { get; set; }
     }
 
     private void FixedUpdate()
@@ -300,6 +302,7 @@ public class AgentController : MonoBehaviour
         s.Z = transform.position.z;
         s.State = status;
         s.Hunger = GetComponent<Hunger>().currentHunger;
+        s.Orientation = transform.rotation.eulerAngles.y;
 
         IList<RaycastHit> hits = GetComponent<RayCaster>().hits;
         foreach (var hit in hits)
