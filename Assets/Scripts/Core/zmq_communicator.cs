@@ -1,9 +1,12 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
 using NetMQ;
 using NetMQ.Sockets;
 using Newtonsoft.Json;
 using UnityEngine;
-using Mujoco;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class ZmqCommunicator : IDisposable
 {
@@ -11,6 +14,10 @@ public class ZmqCommunicator : IDisposable
     private SubscriberSocket subscriber;
     private NetMQPoller poller;
     private volatile bool isRunning = false;
+    private volatile bool isDisposing = false;
+    private readonly object disposeLock = new object();
+
+    public event Action<Cmd> OnCmdReceived;
 
     public ZmqCommunicator(
         string pubAddress = "tcp://0.0.0.0:5556",
@@ -23,12 +30,20 @@ public class ZmqCommunicator : IDisposable
 
             // 1) Publisher for sending images/text from Unity.
             publisher = new PublisherSocket();
+
+            // Set socket options for better performance and cleanup
+            publisher.Options.Linger = TimeSpan.FromMilliseconds(100);
+
             // Bind so Python subscribers can connect.
             publisher.Bind(pubAddress);
 
             // 2) Subscriber for receiving messages from Python.
             subscriber = new SubscriberSocket();
-            // Connect to Python’s publisher address.
+
+            // Set socket options for better performance and cleanup
+            subscriber.Options.Linger = TimeSpan.FromMilliseconds(100);
+
+            // Connect to Python's publisher address.
             subscriber.Connect(subAddress);
             // Subscribe to all topics (empty string).
             subscriber.Subscribe("");
@@ -53,80 +68,164 @@ public class ZmqCommunicator : IDisposable
     }
 
     // Called by NetMQPoller every time the subscriber has a message.
-    private unsafe void OnSubscriberMessageReceived(object sender, NetMQSocketEventArgs e)
+    private void OnSubscriberMessageReceived(object sender, NetMQSocketEventArgs e)
     {
-        if (!isRunning)
+        if (!isRunning || isDisposing)
         {
             return;
         }
 
         try
         {
-            var message = e.Socket.ReceiveFrameString();
-
-            // Deserialize the JSON string into the Cmds class
-            Cmds cmds = JsonConvert.DeserializeObject<Cmds>(message);
-
-            var mjData = MjScene.Instance.Data;
-            var mjModel = MjScene.Instance.Model;
-
-            for (int i=0; i < mjModel->nu; i++) {
-                mjData->ctrl[i] = cmds.torques[i];
-            }   
+            // Use non-blocking receive with timeout
+            if (e.Socket.TryReceiveFrameString(TimeSpan.FromMilliseconds(10), out string message))
+            {
+                // Deserialize the JSON string into the Cmds class
+                Cmd cmd = JsonConvert.DeserializeObject<Cmd>(message);
+                OnCmdReceived?.Invoke(cmd);
+            }
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Error reading subscriber message: {ex.Message}");
+            if (!isDisposing)
+            {
+                Debug.LogError($"Error reading subscriber message: {ex.Message}");
+            }
         }
     }
 
-    // Example of sending string messages:
-    public void SendFrame(RobotFrame frame)
+    public void SendFrame(object frame)
     {
-        if (!isRunning)
+        if (!isRunning || isDisposing)
         {
-            Debug.LogWarning("ZmqCommunicator is not running.");
             return;
         }
+
         try
         {
-            publisher.SendFrame(JsonUtility.ToJson(frame));
+            string jsonFrame = JsonConvert.SerializeObject(frame);
+
+            // Use non-blocking send with timeout
+            if (!publisher.TrySendFrame(TimeSpan.FromMilliseconds(10), jsonFrame))
+            {
+                Debug.LogWarning("Failed to send frame - timeout");
+            }
         }
         catch (Exception e)
         {
-            Debug.LogError($"Error in SendFrame: {e.Message}");
+            if (!isDisposing)
+            {
+                Debug.LogError($"Error in SendFrame: {e.Message}");
+            }
         }
     }
+
     public void Dispose()
     {
-        if (!isRunning) return;
+        lock (disposeLock)
+        {
+            if (!isRunning || isDisposing) return;
+
+            isDisposing = true;
+            isRunning = false;
+        }
 
         try
         {
-            if (subscriber != null)
+            Debug.Log("Starting ZMQ Communicator disposal...");
+
+            // Stop the poller first with timeout
+            if (poller != null && poller.IsRunning)
             {
-                subscriber.ReceiveReady -= OnSubscriberMessageReceived;
+                poller.Stop();
+
+                // Wait for poller to stop with timeout
+                var stopTimeout = DateTime.Now.AddMilliseconds(500);
+                while (poller.IsRunning && DateTime.Now < stopTimeout)
+                {
+                    Thread.Sleep(10);
+                }
+
+                if (poller.IsRunning)
+                {
+                    Debug.LogWarning("Poller did not stop within timeout");
+                }
             }
 
-            poller?.Stop();
-            poller?.Dispose();
-            
-            subscriber?.Close();
-            subscriber?.Dispose();
+            // Unsubscribe from events
+            if (subscriber != null)
+            {
+                try
+                {
+                    subscriber.ReceiveReady -= OnSubscriberMessageReceived;
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Error unsubscribing from events: {ex.Message}");
+                }
+            }
 
-            publisher?.Close();
-            publisher?.Dispose();
+            // Dispose poller
+            try
+            {
+                poller?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Error disposing poller: {ex.Message}");
+            }
 
-            // Cleanup all things relate to NetMQ
-            NetMQConfig.Cleanup();
+            // Close and dispose subscriber
+            try
+            {
+                subscriber?.Close();
+                subscriber?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Error disposing subscriber: {ex.Message}");
+            }
 
-            Debug.Log("ZMQ Communicator disposed.");
+            // Close and dispose publisher
+            try
+            {
+                publisher?.Close();
+                publisher?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Error disposing publisher: {ex.Message}");
+            }
+
+            // Cleanup all things relate to NetMQ with timeout
+            try
+            {
+                var cleanupTask = System.Threading.Tasks.Task.Run(() => NetMQConfig.Cleanup());
+                if (!cleanupTask.Wait(1000)) // 1 second timeout
+                {
+                    Debug.LogWarning("NetMQ cleanup timed out");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Error during NetMQ cleanup: {ex.Message}");
+            }
+
+            Debug.Log("ZMQ Communicator disposed successfully.");
         }
         catch (Exception e)
         {
             Debug.LogError($"Error disposing ZMQ Communicator: {e.Message}");
         }
+        finally
+        {
+            isDisposing = false;
+        }
+    }
 
-        isRunning = false;
+    // Add finalizer as safety net
+    ~ZmqCommunicator()
+    {
+        Dispose();
     }
 }
