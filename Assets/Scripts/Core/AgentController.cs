@@ -323,7 +323,15 @@ public class AgentController : MonoBehaviour
                         Type = 1
                     });
                 }
-                else if (hit.collider.CompareTag("Enemy"))
+                //else if (hit.collider.CompareTag("Enemy"))
+                //{
+                //    s.LineOfSight.Add(new LineOfSight
+                //    {
+                //        Distance = hit.distance,
+                //        Type = 2
+                //    });
+                //}
+                else if (hit.collider.CompareTag("Checkpoint"))
                 {
                     s.LineOfSight.Add(new LineOfSight
                     {
