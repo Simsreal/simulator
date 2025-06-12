@@ -10,6 +10,7 @@ TagManager:
   - People
   - Trap
   - Food
+  - Checkpoint
   layers:
   - Default
   - TransparentFX

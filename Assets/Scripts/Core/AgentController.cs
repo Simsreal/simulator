@@ -28,6 +28,8 @@ public class AgentController : MonoBehaviour
     private Coroutine processCommandsCoroutine;
     private bool isShuttingDown = false;
 
+    private const float TURNING_SPEED = 10f; // Speed of turning in degrees per command
+
     public void ResetStatus()
     {
         controlledObject = GetComponent<Rigidbody>();
@@ -213,12 +215,12 @@ public class AgentController : MonoBehaviour
                 break;
             case "lookleft": // turn left
                 controlledObject.MoveRotation(
-                    controlledObject.rotation * Quaternion.Euler(0, -1f, 0)
+                    controlledObject.rotation * Quaternion.Euler(0, -TURNING_SPEED, 0)
                 );
                 break;
             case "lookright": // turn right
                 controlledObject.MoveRotation(
-                    controlledObject.rotation * Quaternion.Euler(0, 1f, 0)
+                    controlledObject.rotation * Quaternion.Euler(0, TURNING_SPEED, 0)
                 );
                 break;
         }
@@ -321,7 +323,15 @@ public class AgentController : MonoBehaviour
                         Type = 1
                     });
                 }
-                else if (hit.collider.CompareTag("Enemy"))
+                //else if (hit.collider.CompareTag("Enemy"))
+                //{
+                //    s.LineOfSight.Add(new LineOfSight
+                //    {
+                //        Distance = hit.distance,
+                //        Type = 2
+                //    });
+                //}
+                else if (hit.collider.CompareTag("Checkpoint"))
                 {
                     s.LineOfSight.Add(new LineOfSight
                     {
